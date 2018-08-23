@@ -1,0 +1,54 @@
+---
+- name: Check Connection to Hosts
+  ping:
+
+- name: Generate MongoDB Router Configuration
+  template:
+    src: mongos.conf.j2
+    dest: /etc/mongos.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Generate MongoDB Router Service
+  template:
+    src: mongos.service.j2
+    dest: /etc/systemd/system/mongos.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Reload MongoDB Router Service
+  systemd:
+    daemon_reload: yes
+
+- name: Enable MongoDB Router Service
+  service:
+    name: mongos
+    enabled: yes
+    state: started
+
+- name: Wait For MongoDB Router Service
+  wait_for:
+    port: 27017
+    delay: 5
+    state: present
+
+- name: Generate Script For Adding MongoDB ReplicaSet Node as Shards
+  template:
+    src: mongos-shards-join.js.j2
+    dest: /tmp/mongos-shards-join.js
+    owner: root
+    group: root
+    mode: 0644
+  run_once: true
+
+- name: Adding MongoDB ReplicaSet Node as Shards
+  command: mongo admin -u admin -p {{ mongo_admin_password }} /tmp/mongos-shards-join.js
+  run_once: true
+  
+- name: Clean-up Generated Script For Adding MongoDB ReplicaSet Node as Shards
+  file:
+    path: /tmp/mongos-shards-join.js
+    state: absent
+  run_once: true

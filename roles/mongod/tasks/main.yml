@@ -1,0 +1,85 @@
+---
+- name: Check Connection to Hosts
+  ping:
+
+- name: Set MongoDB Node Hosts Facts
+  set_fact:
+    replica_name: "{{ replica_name | default(default_value, true) }}"
+
+- name: Generate MongoDB Node Configuration
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enable MongoDB Node Service
+  service:
+    name: mongod
+    enabled: yes
+    state: started
+
+- name: Wait For MongoDB Node Service
+  wait_for:
+    port: 27015
+    delay: 5
+    state: present
+
+- name: Initiate ReplicaSet For MongoDB Node
+  command: mongo --port 27015 --eval "rs.initiate();"
+  when:
+    - primary
+
+- name: Wait For MongoDB Node ReplicaSet Primary Election
+  command: mongo --port 27015 --eval "rs.isMaster().ismaster;"
+  register: mongod_ismaster_status
+  until: mongod_ismaster_status.stdout.find("true") != -1
+  retries: 3
+  delay: 5
+  when:
+    - primary
+
+- name: Generate Script For Intiate MongoDB Node Superuser
+  template:
+    src: mongod-create-user.js.j2
+    dest: /tmp/mongod-create-user.js
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - primary
+
+- name: Intiate MongoDB Node Superuser
+  command: mongo admin --port 27015 /tmp/mongod-create-user.js
+  when:
+    - primary
+  
+- name: Clean-up Generated Script For Intiate MongoDB Node Superuser
+  file:
+    path: /tmp/mongod-create-user.js
+    state: absent
+  when:
+    - primary
+
+- name: Generate Script For Adding Other MongoDB Node ReplicaSet
+  template:
+    src: mongod-replset-join.js.j2
+    dest: /tmp/mongod-replset-join.js
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - primary
+
+- name: Adding Other MongoDB Node ReplicaSet
+  command: mongo admin --port 27015 -u admin -p {{ mongo_admin_password }} /tmp/mongod-replset-join.js
+  when:
+    - primary
+  
+- name: Clean-up Generated Script For Adding Other MongoDB Node ReplicaSet
+  file:
+    path: /tmp/mongod-replset-join.js
+    state: absent
+  when:
+    - primary

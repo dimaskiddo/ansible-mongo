@@ -1,0 +1,6 @@
+{% for mongoc_host in groups['mongoc'] %}
+{%  if not loop.first %}
+rs.add("{{ mongoc_host }}:27011");
+{%  endif %}
+sleep(1000);
+{% endfor %}

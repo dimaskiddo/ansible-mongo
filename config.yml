@@ -1,0 +1,25 @@
+---
+- hosts: localhost
+  connection: local
+  roles:
+  - role: local
+
+- hosts: all
+  remote_user: "{{ ssh_remote_user }}"
+  roles:
+  - role: common
+
+- hosts: mongoc
+  remote_user: "{{ ssh_remote_user }}"
+  roles:
+  - role: mongoc
+
+- hosts: mongod
+  remote_user: "{{ ssh_remote_user }}"
+  roles:
+  - role: mongod
+
+- hosts: mongos
+  remote_user: "{{ ssh_remote_user }}"
+  roles:
+  - role: mongos

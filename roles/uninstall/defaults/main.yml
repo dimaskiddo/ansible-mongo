@@ -1,0 +1,15 @@
+---
+# Default Value for Full Uninstall
+full_uninstall: 'false'
+
+# Default Value for Storage Backend Using ZFS
+zfs_backend: 'false'
+
+# Default Value for ZFS Pool Name
+zfs_pool_name: 'data'
+
+# Default Value MongoDB Primary Node Flag
+primary: 'false'
+
+# Default Value MongoDB Arbiter Node Flag
+arbiter: 'false'

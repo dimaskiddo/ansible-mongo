@@ -1,0 +1,5 @@
+---
+- hosts: all
+  remote_user: "{{ ssh_remote_user }}"
+  roles:
+  - role: uninstall

@@ -1,0 +1,6 @@
+{% for mongod_host in groups['mongod'] %}
+{%  if not hostvars[mongod_host].arbiter %}
+sh.addShard("repl-{{ hostvars[mongod_host].replica_name }}/{{ mongod_host }}:27015");
+sleep(250);
+{%  endif %}
+{% endfor %}

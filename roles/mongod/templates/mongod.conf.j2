@@ -1,0 +1,34 @@
+# Shere to write logging data.
+systemLog:
+  destination: file
+  path: /var/mongodb/log/mongod.log
+  logAppend: true
+
+# Where and how to store data.
+storage:
+  dbPath: /var/mongodb/data
+  journal:
+    enabled: true
+
+# How the process runs
+processManagement:
+  fork: true
+  pidFilePath: /var/run/mongodb/mongod.pid
+
+# Network interfaces
+net:
+  port: 27015
+  bindIp: {{ ansible_host }},localhost
+
+# How to secure it
+security:
+  authorization: enabled
+  keyFile: /var/mongodb/pki/keyfile.pem
+
+# Where to replicate
+replication:
+  replSetName: repl-{{ replica_name }}
+
+# How shard runs
+sharding:
+  clusterRole: shardsvr

@@ -1,0 +1,216 @@
+---
+- name: Check Connection to Hosts
+  ping:
+
+- name: Check For Minimum Requirements
+  fail:
+    msg: "This playbook only supported for Ubuntu 16.04!"
+  when:
+    - ansible_distribution != 'Ubuntu'
+    - ansible_distribution_version != '16.04'
+
+- name: Set Global Facts
+  set_fact:
+    mongo_admin_password: "{{ mongo_admin_password | default(default_value, true) }}"
+    zfs_backend: "{{ zfs_backend if zfs_block_device is defined else 'false' | default(default_value, true) }}"
+    zfs_pool_name: "{{ zfs_pool_name | default(default_value, true) }}"
+  delegate_to: "{{ item }}"
+  with_items:
+    - localhost
+  run_once: true
+
+- name: Set MongoDB Node Hosts Facts
+  set_fact:
+    primary: "{{ primary | default(default_value, true) }}"
+    arbiter: "{{ arbiter | default(default_value, true) }}"
+
+- name: Set MongoDB Node Arbiter Hosts Facts
+  set_fact:
+    arbiter: 'false'
+  when:
+    - primary
+
+- name: Upgrade Operating System
+  apt:
+    force_apt_get: yes
+    update_cache: yes
+    autoremove: yes
+    autoclean: yes
+    upgrade: full
+
+- name: Install Python PIP Packages
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    update_cache: yes
+    autoremove: yes
+    autoclean: yes
+    state: present
+  with_items:
+    - python-pip
+
+- name: Install PyMongo Packages from Python PIP
+  pip:
+    name: pymongo
+    state: latest
+    use_mirrors: no
+
+- name: Install ZFS Packages
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    update_cache: yes
+    autoremove: yes
+    autoclean: yes
+    state: present
+  with_items:
+    - zfsutils-linux
+  when:
+    - zfs_backend
+    - not arbiter
+
+- name: Wipe ZFS Block Device for MongoDB
+  command: wipefs --all {{ zfs_block_device }}
+  when:
+    - zfs_backend
+    - not arbiter
+
+- name: Partition ZFS Block Device for MongoDB
+  parted:
+    device: "{{ zfs_block_device }}"
+    number: 1
+    part_type: primary
+    part_start: 0%
+    part_end: 100%
+    state: present
+  when:
+    - zfs_backend
+    - not arbiter
+
+- name: Create ZFS Pool for MongoDB
+  command: zpool create {{ zfs_pool_name }} -O ashift=12 -o compression=lz4 {{ zfs_block_device }}1
+  when:
+    - zfs_backend
+    - not arbiter
+
+- name: Create ZFS Dataset for MongoDB
+  command: zfs create -s -o volblocksize=64k -V {{ zfs_dataset_size }} {{ zfs_pool_name }}/mongodb
+  when:
+    - zfs_backend
+    - not arbiter
+
+- name: Format ZFS Dataset for MongoDB
+  filesystem:
+    fstype: xfs
+    dev: /dev/zvol/{{ zfs_pool_name }}/mongodb
+  when:
+    - zfs_backend
+    - not arbiter
+
+- name: Install MongoDB Keyring
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+    state: present
+
+- name: Install MongoDB Repository
+  lineinfile:
+    dest: /etc/apt/sources.list.d/mongodb-org-3.6.list
+    line: "deb [arch=amd64] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse"
+    create: yes
+    state: present
+
+- name: Install MongoDB Packages
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    update_cache: yes
+    autoremove: yes
+    autoclean: yes
+    state: present
+  with_items:
+    - mongodb-org
+
+- name: Create MongoDB Run Directory
+  file:
+    path: /var/run/mongodb
+    state: directory
+    owner: mongodb
+    group: mongodb
+    recurse: true
+
+- name: Create MongoDB Parent Directory
+  file:
+    path: /var/mongodb
+    state: directory
+    owner: mongodb
+    group: mongodb
+    recurse: true
+  when:
+    - not zfs_backend
+
+- name: Mount ZFS Dataset to MongoDB Directory
+  mount:
+    path: /var/mongodb
+    src: /dev/zvol/{{ zfs_pool_name }}/mongodb
+    fstype: xfs
+    opts: defaults
+    state: mounted
+  when:
+    - zfs_backend
+    - not arbiter
+
+- name: Create MongoDB Database Directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: mongodb
+    group: mongodb
+    recurse: true
+  with_items:
+    - /var/mongodb/data
+    - /var/mongodb/log
+    - /var/mongodb/pki
+
+- name: Distribute MongoDB Keyfile
+  copy:
+    src: /tmp/keyfile.pem
+    dest: /var/mongodb/pki/keyfile.pem
+    owner: mongodb
+    group: mongodb
+    mode: 0400
+
+- name: Set Facts MongoDB Node Service
+  command: systemctl list-unit-files | grep mongod.service
+  register: mongod_service
+
+- name: Disable MongoDB Node Service
+  service:
+    name: mongod
+    enabled: no
+    state: stopped
+  when:
+    - mongod_service.stdout.find("mongod.service") != -1
+
+- name: Find Exsisting MongoDB Configuration
+  find:
+    paths: /etc
+    patterns: "mongo*"
+    use_regex: true
+  register: mongodb_config_to_delete
+
+- name: Remove Exsisting MongoDB Configuration
+  file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items:
+    - "{{ mongodb_config_to_delete['files'] }}"
+
+- name: Remove Generated Keyfile
+  file:
+    path: /tmp/keyfile.pem
+    state: absent
+  delegate_to: "{{ item }}"
+  with_items:
+    - localhost
+  run_once: true

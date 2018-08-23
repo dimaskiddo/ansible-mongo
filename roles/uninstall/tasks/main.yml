@@ -1,0 +1,206 @@
+---
+- name: Check Connection to Hosts
+  ping:
+
+- name: Check For Minimum Requirements
+  fail:
+    msg: "This playbook only supported for Ubuntu 16.04!"
+  when:
+    - ansible_distribution != 'Ubuntu'
+    - ansible_distribution_version != '16.04'
+
+- name: Set Global Facts
+  set_fact:
+    full_uninstall: "{{ full_uninstall | default(default_value, true) }}"
+    zfs_backend: "{{ zfs_backend if zfs_block_device is defined else 'false' | default(default_value, true) }}"
+    zfs_pool_name: "{{ zfs_pool_name | default(default_value, true) }}"
+  delegate_to: "{{ item }}"
+  with_items:
+    - localhost
+  run_once: true
+
+- name: Set MongoDB Node Hosts Facts
+  set_fact:
+    primary: "{{ primary | default(default_value, true) }}"
+    arbiter: "{{ arbiter | default(default_value, true) }}"
+
+- name: Set MongoDB Node Arbiter Hosts Facts
+  set_fact:
+    arbiter: 'false'
+  when:
+    - primary
+
+- name: Remove Generated Keyfile
+  file:
+    path: /tmp/keyfile.pem
+    state: absent
+  delegate_to: "{{ item }}"
+  with_items:
+    - localhost
+  run_once: true
+
+- name: Set Facts MongoDB Router Service
+  command: systemctl list-unit-files | grep mongos.service
+  register: mongos_service
+
+- name: Disable MongoDB Router Service
+  service:
+    name: mongos
+    enabled: no
+    state: stopped
+  when:
+    - mongos_service.stdout.find("mongos.service") != -1
+
+- name: Remove MongoDB Router Service
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/systemd/system/mongos.service
+  when:
+    - mongos_service.stdout.find("mongos.service") != -1
+
+- name: Reload MongoDB Router Service
+  systemd:
+    daemon_reload: yes
+  when:
+    - mongos_service.stdout.find("mongos.service") != -1
+
+- name: Set Facts MongoDB Node Service
+  command: systemctl list-unit-files | grep mongod.service
+  register: mongod_service
+
+- name: Disable MongoDB Node Service
+  service:
+    name: mongod
+    enabled: no
+    state: stopped
+  when:
+    - mongod_service.stdout.find("mongod.service") != -1
+
+- name: Find Exsisting MongoDB Scripts
+  find:
+    paths: /tmp
+    patterns: "mongo*"
+    use_regex: true
+  register: mongodb_scripts_to_delete
+
+- name: Remove Exsisting MongoDB Scripts
+  file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items:
+    - "{{ mongodb_scripts_to_delete['files'] }}"
+
+- name: Find Exsisting MongoDB Configuration
+  find:
+    paths: /etc
+    patterns: "mongo*"
+    use_regex: true
+  register: mongodb_config_to_delete
+
+- name: Remove Exsisting MongoDB Configuration
+  file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items:
+    - "{{ mongodb_config_to_delete['files'] }}"
+
+- name: Find Exsisting MongoDB Files
+  find:
+    paths: /var/mongodb
+    patterns: "*"
+    use_regex: true
+  register: mongodb_files_to_delete
+
+- name: Remove Exsisting MongoDB Files
+  file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items:
+    - "{{ mongodb_files_to_delete['files'] }}"
+
+- name: Remove MongoDB Database Directories
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/mongodb/data
+    - /var/mongodb/log
+    - /var/mongodb/pki
+
+- name: Unmount ZFS Dataset from MongoDB Directory
+  mount:
+    path: /var/mongodb
+    src: /dev/zvol/{{ zfs_pool_name }}/mongodb
+    fstype: xfs
+    opts: defaults
+    state: absent
+  when:
+    - full_uninstall
+    - zfs_backend
+    - not arbiter
+
+- name: Remove MongoDB Parrent Directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/mongodb
+  when:
+    - not zfs_backend
+
+- name: Remove MongoDB Run Directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/run/mongodb
+
+- name: Uninstall MongoDB Packages
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    autoremove: yes
+    autoclean: yes
+    purge: yes
+    state: absent
+  with_items:
+    - mongodb-org
+  when:
+    - full_uninstall
+
+- name: Uninstall MongoDB Repository
+  file:
+    path: /etc/apt/sources.list.d/mongodb-org-3.6.list
+    state: absent
+  when:
+    - full_uninstall
+
+- name: Uninstall MongoDB Keyring
+  apt_key:
+    id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+    state: absent
+  when:
+    - full_uninstall
+
+- name: Remove ZFS Dataset for MongoDB
+  command: zfs destory -fR {{ zfs_pool_name }}/mongodb
+  when:
+    - full_uninstall
+    - zfs_backend
+    - not arbiter
+
+- name: Remove ZFS Pool for MongoDB
+  command: zpool destory -f {{ zfs_pool_name }}
+  when:
+    - full_uninstall
+    - zfs_backend
+    - not arbiter
+
+- name: Wipe ZFS Block Device for MongoDB
+  command: wipefs --all {{ zfs_block_device }}
+  when:
+    - full_uninstall
+    - zfs_backend
+    - not arbiter
