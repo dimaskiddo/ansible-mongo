@@ -1,6 +1,6 @@
 {% for mongoc_host in groups['mongoc'] %}
 {%  if not loop.first %}
-rs.add("{{ mongoc_host }}:27011");
+rs.add("{{ hostvars[mongoc_host].ip }}:{{ hostvars[mongoc_host].port }}");
 {%  endif %}
 sleep(1000);
 {% endfor %}

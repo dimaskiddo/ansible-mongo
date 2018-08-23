@@ -1,13 +1,9 @@
 ---
-- name: Check Connection to Hosts
-  ping:
-
-- name: Check For Minimum Requirements
+- name: Check Operating System
   fail:
-    msg: "This playbook only supported for Ubuntu 16.04!"
+    msg: "Operating System is not Supported!"
   when:
     - ansible_distribution != 'Ubuntu'
-    - ansible_distribution_version != '16.04'
 
 - name: Set Global Facts
   set_fact:
@@ -19,12 +15,13 @@
     - localhost
   run_once: true
 
-- name: Set MongoDB Node Hosts Facts
+- name: Set Host Facts
   set_fact:
+    ip: "{{ ip | default(defaul_value, true) }}"
     primary: "{{ primary | default(default_value, true) }}"
     arbiter: "{{ arbiter | default(default_value, true) }}"
 
-- name: Set MongoDB Node Arbiter Hosts Facts
+- name: Set Arbiter Facts
   set_fact:
     arbiter: 'false'
   when:
@@ -116,7 +113,7 @@
 - name: Install MongoDB Repository
   lineinfile:
     dest: /etc/apt/sources.list.d/mongodb-org-3.6.list
-    line: "deb [arch=amd64] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse"
+    line: "deb [arch=amd64] http://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/3.6 multiverse"
     create: yes
     state: present
 

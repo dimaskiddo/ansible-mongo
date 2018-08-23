@@ -17,8 +17,8 @@ processManagement:
 
 # Network interfaces
 net:
-  port: 27015
-  bindIp: {{ ansible_host }},localhost
+  port: {{ port }}
+  bindIp: {{ ip }},localhost
 
 # How to secure it
 security:

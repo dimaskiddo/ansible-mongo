@@ -2,9 +2,9 @@
 {%  if not hostvars[mongod_host].primary %}
 {%    if hostvars[mongod_host].replica_name == replica_name %}
 {%      if not hostvars[mongod_host].arbiter %}
-rs.add("{{ mongod_host }}:27015");
+rs.add("{{ hostvars[mongod_host].ip }}:{{ hostvars[mongod_host].port }}");
 {%      else %}
-rs.addArb("{{ mongod_host }}:27015");
+rs.addArb("{{ hostvars[mongod_host].ip }}:{{ hostvars[mongod_host].port }}");
 {%      endif %}
 {%    endif %}
 {%  endif %}

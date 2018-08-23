@@ -1,9 +1,7 @@
 ---
-- name: Check Connection to Hosts
-  ping:
-
-- name: Set MongoDB Node Hosts Facts
+- name: Set Host Facts
   set_fact:
+    port: "{{ port | default(default_value, true) }}"
     replica_name: "{{ replica_name | default(default_value, true) }}"
 
 - name: Generate MongoDB Node Configuration
@@ -22,17 +20,17 @@
 
 - name: Wait For MongoDB Node Service
   wait_for:
-    port: 27015
+    port: "{{ port }}"
     delay: 5
     state: present
 
 - name: Initiate ReplicaSet For MongoDB Node
-  command: mongo --port 27015 --eval "rs.initiate();"
+  command: mongo --host {{ ip }} --port {{ port }} --eval "rs.initiate();"
   when:
     - primary
 
 - name: Wait For MongoDB Node ReplicaSet Primary Election
-  command: mongo --port 27015 --eval "rs.isMaster().ismaster;"
+  command: mongo --host {{ ip }} --port {{ port }} --eval "rs.isMaster().ismaster;"
   register: mongod_ismaster_status
   until: mongod_ismaster_status.stdout.find("true") != -1
   retries: 3
@@ -51,7 +49,7 @@
     - primary
 
 - name: Intiate MongoDB Node Superuser
-  command: mongo admin --port 27015 /tmp/mongod-create-user.js
+  command: mongo admin --host {{ ip }} --port {{ port }} /tmp/mongod-create-user.js
   when:
     - primary
   
@@ -73,7 +71,7 @@
     - primary
 
 - name: Adding Other MongoDB Node ReplicaSet
-  command: mongo admin --port 27015 -u admin -p {{ mongo_admin_password }} /tmp/mongod-replset-join.js
+  command: mongo admin --host {{ ip }} --port {{ port }} -u admin -p {{ mongo_admin_password }} /tmp/mongod-replset-join.js
   when:
     - primary
   

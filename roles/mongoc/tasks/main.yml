@@ -1,6 +1,7 @@
 ---
-- name: Check Connection to Hosts
-  ping:
+- name: Set Host Facts
+  set_fact:
+    port: "{{ port | default(default_value, true) }}"
 
 - name: Generate MongoDB Config Server Configuration
   template:
@@ -18,16 +19,16 @@
 
 - name: Wait For MongoDB Config Server Service
   wait_for:
-    port: 27011
+    port: "{{ port }}"
     delay: 5
     state: present
 
 - name: Initiate ReplicaSet For MongoDB Config Server
-  command: mongo --port 27011 --eval "rs.initiate();"
+  command: mongo --host {{ ip }} --port {{ port }} --eval "rs.initiate();"
   run_once: true
   
 - name: Wait For MongoDB Config Server ReplicaSet Primary Election
-  command: mongo --port 27011 --eval "rs.isMaster().ismaster;"
+  command: mongo --host {{ ip }} --port {{ port }} --eval "rs.isMaster().ismaster;"
   register: mongoc_ismaster_status
   until: mongoc_ismaster_status.stdout.find("true") != -1
   retries: 3
@@ -44,7 +45,7 @@
   run_once: true
   
 - name: Intiate MongoDB Config Server Superuser
-  command: mongo admin --port 27011 /tmp/mongoc-create-user.js
+  command: mongo admin --host {{ ip }} --port {{ port }} /tmp/mongoc-create-user.js
   run_once: true
   
 - name: Clean-up Generated Script For Intiate MongoDB Config Server Superuser
@@ -63,7 +64,7 @@
   run_once: true
   
 - name: Adding Other MongoDB Config Server ReplicaSet
-  command: mongo admin --port 27011 -u admin -p {{ mongo_admin_password }} /tmp/mongoc-replset-join.js
+  command: mongo admin --host {{ ip }} --port {{ port }} -u admin -p {{ mongo_admin_password }} /tmp/mongoc-replset-join.js
   run_once: true
   
 - name: Clean-up Generated Script For Adding Other MongoDB Config Server ReplicaSet

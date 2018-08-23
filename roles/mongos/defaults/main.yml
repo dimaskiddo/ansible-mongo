@@ -1,0 +1,3 @@
+---
+# Default Value MongoDB Router Port
+port: 27017

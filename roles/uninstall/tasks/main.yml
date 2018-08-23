@@ -1,13 +1,9 @@
 ---
-- name: Check Connection to Hosts
-  ping:
-
-- name: Check For Minimum Requirements
+- name: Check Operating System
   fail:
-    msg: "This playbook only supported for Ubuntu 16.04!"
+    msg: "Operating System is not Supported!"
   when:
     - ansible_distribution != 'Ubuntu'
-    - ansible_distribution_version != '16.04'
 
 - name: Set Global Facts
   set_fact:

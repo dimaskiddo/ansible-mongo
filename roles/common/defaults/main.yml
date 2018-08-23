@@ -8,6 +8,9 @@ zfs_backend: 'false'
 # Default Value for ZFS Pool Name
 zfs_pool_name: 'data'
 
+# Default Value for Host IP
+ip: "{{ ansible_default_ipv4.address }}"
+
 # Default Value MongoDB Primary Node Flag
 primary: 'false'
 

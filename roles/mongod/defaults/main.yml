@@ -1,3 +1,6 @@
 ---
+# Default Value MongoDB Node Port
+port: 27015
+
 # Default Value MongoDB ReplicaSet Name
 replica_name: 'data'

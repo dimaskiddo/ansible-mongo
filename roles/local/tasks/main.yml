@@ -1,6 +1,3 @@
 ---
-- name: Check Connection Hosts
-  ping:
-
 - name: Generate Keyfile
   command: openssl rand -base64 756 -out /tmp/keyfile.pem
