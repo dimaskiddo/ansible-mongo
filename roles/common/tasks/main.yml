@@ -28,7 +28,7 @@
     - primary
 
 - name: Set System Daemon Facts
-  command: which systemd
+  command: bash -c "which systemd || true"
   register: systemd_service
 
 - name: Upgrade Operating System

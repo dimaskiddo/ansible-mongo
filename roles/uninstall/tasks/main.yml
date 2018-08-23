@@ -31,7 +31,7 @@
   register: systemd_service
 
 - name: Set MongoDB Node Service Facts
-  command: bash -c "service --status-all | grep mongod"
+  command: bash -c "service --status-all | grep mongod || true"
   register: mongod_service
 
 - name: Disable MongoDB Node Service
@@ -43,7 +43,7 @@
     - mongod_service.stdout.find("mongod") != -1
 
 - name: Set MongoDB Router Service Facts
-  command: bash -c "service --status-all | grep mongos"
+  command: bash -c "service --status-all | grep mongos || true"
   register: mongos_service
 
 - name: Disable MongoDB Router Service
