@@ -15,39 +15,44 @@
     - localhost
   run_once: true
 
-- name: Set MongoDB Node Hosts Facts
+- name: Set Host Facts
   set_fact:
     primary: "{{ primary | default(default_value, true) }}"
     arbiter: "{{ arbiter | default(default_value, true) }}"
 
-- name: Set MongoDB Node Arbiter Hosts Facts
+- name: Set Arbiter Facts
   set_fact:
     arbiter: 'false'
   when:
     - primary
 
-- name: Remove Generated Keyfile
-  file:
-    path: /tmp/keyfile.pem
-    state: absent
-  delegate_to: "{{ item }}"
-  with_items:
-    - localhost
-  run_once: true
+- name: Set System Daemon Facts
+  command: which systemctl || true
+  register: systemd_service
 
-- name: Set Facts MongoDB Router Service
-  command: systemctl list-unit-files | grep mongos.service
+- name: Set MongoDB Node Service Facts
+  command: service --status-all | grep mongod
+  register: mongod_service
+
+- name: Disable MongoDB Node Service
+  systemd:
+    name: mongod
+    enabled: no
+    state: stopped
+  when:
+    - mongod_service.stdout.find("mongod") != -1
+
+- name: Set MongoDB Router Service Facts
+  command: service --status-all | grep mongos
   register: mongos_service
 
 - name: Disable MongoDB Router Service
-  systemd:
+  service:
     name: mongos
     enabled: no
     state: stopped
-    daemon_reload: yes
   when:
-    - mongos_service.stdout.find("mongos.service") != -1
-  ignore_errors: yes
+    - mongos_service.stdout.find("mongos") != -1
 
 - name: Remove MongoDB Router Service
   file:
@@ -56,29 +61,7 @@
   with_items:
     - /etc/systemd/system/mongos.service
   when:
-    - mongos_service.stdout.find("mongos.service") != -1
-  ignore_errors: yes
-  
-- name: Reload MongoDB Router Service
-  systemd:
-    daemon_reload: yes
-  when:
-    - mongos_service.stdout.find("mongos.service") != -1
-  ignore_errors: yes
-
-- name: Set Facts MongoDB Node Service
-  command: systemctl list-unit-files | grep mongod.service
-  register: mongod_service
-
-- name: Disable MongoDB Node Service
-  systemd:
-    name: mongod
-    enabled: no
-    state: stopped
-    daemon_reload: yes
-  when:
-    - mongod_service.stdout.find("mongod.service") != -1
-  ignore_errors: yes
+    - mongos_service.stdout.find("mongos") != -1
 
 - name: Find Exsisting MongoDB Scripts
   find:
@@ -206,3 +189,18 @@
     - full_uninstall
     - zfs_backend
     - not arbiter
+
+- name: Remove Generated Keyfile
+  file:
+    path: /tmp/keyfile.pem
+    state: absent
+  delegate_to: "{{ item }}"
+  with_items:
+    - localhost
+  run_once: true
+
+- name: Reload System Daemon
+  systemd:
+    daemon_reload: yes
+  when:
+    - systemd_service.stdout.find("systemctl") != -1

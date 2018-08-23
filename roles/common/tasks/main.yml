@@ -27,6 +27,10 @@
   when:
     - primary
 
+- name: Set System Daemon Facts
+  command: which systemctl || true
+  register: systemd_service
+
 - name: Upgrade Operating System
   apt:
     force_apt_get: yes
@@ -177,18 +181,17 @@
     group: mongodb
     mode: 0400
 
-- name: Set Facts MongoDB Node Service
-  command: systemctl list-unit-files | grep mongod.service
-  register: mongod_service
+- name: Reload MongoDB Node Service
+  systemd:
+    daemon_reload: yes
+  when:
+    - systemd_service.stdout.find("systemctl") != -1
 
 - name: Disable MongoDB Node Service
-  systemd:
+  service:
     name: mongod
     enabled: no
     state: stopped
-    daemon_reload: yes
-  when:
-    - mongod_service.stdout.find("mongod.service") != -1
 
 - name: Find Exsisting MongoDB Configuration
   find:

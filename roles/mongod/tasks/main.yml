@@ -13,11 +13,10 @@
     mode: 0644
 
 - name: Enable MongoDB Node Service
-  systemd:
+  service:
     name: mongod
-    enabled: no
+    enabled: yes
     state: started
-    daemon_reload: yes
 
 - name: Wait For MongoDB Node Service
   wait_for:
