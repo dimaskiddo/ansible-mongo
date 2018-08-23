@@ -46,6 +46,7 @@
     state: stopped
   when:
     - mongos_service.stdout.find("mongos.service") != -1
+  ignore_errors: yes
 
 - name: Remove MongoDB Router Service
   file:
@@ -55,12 +56,14 @@
     - /etc/systemd/system/mongos.service
   when:
     - mongos_service.stdout.find("mongos.service") != -1
-
+  ignore_errors: yes
+  
 - name: Reload MongoDB Router Service
   systemd:
     daemon_reload: yes
   when:
     - mongos_service.stdout.find("mongos.service") != -1
+  ignore_errors: yes
 
 - name: Set Facts MongoDB Node Service
   command: systemctl list-unit-files | grep mongod.service
@@ -73,6 +76,7 @@
     state: stopped
   when:
     - mongod_service.stdout.find("mongod.service") != -1
+  ignore_errors: yes
 
 - name: Find Exsisting MongoDB Scripts
   find:
