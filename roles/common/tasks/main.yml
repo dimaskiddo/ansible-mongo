@@ -39,6 +39,17 @@
     autoclean: yes
     upgrade: full
 
+- name: Install Required Packages
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    update_cache: yes
+    autoremove: yes
+    autoclean: yes
+    state: present
+  with_items:
+    - software-properties-common
+
 - name: Install Python PIP Packages
   apt:
     name: "{{ item }}"
