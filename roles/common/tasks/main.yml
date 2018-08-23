@@ -182,10 +182,11 @@
   register: mongod_service
 
 - name: Disable MongoDB Node Service
-  service:
+  systemd:
     name: mongod
     enabled: no
     state: stopped
+    daemon_reload: yes
   when:
     - mongod_service.stdout.find("mongod.service") != -1
 

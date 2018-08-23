@@ -19,15 +19,12 @@
     group: root
     mode: 0644
 
-- name: Reload MongoDB Router Service
-  systemd:
-    daemon_reload: yes
-
 - name: Enable MongoDB Router Service
-  service:
+  systemd:
     name: mongos
-    enabled: yes
+    enabled: no
     state: started
+    daemon_reload: yes
 
 - name: Wait For MongoDB Router Service
   wait_for:
