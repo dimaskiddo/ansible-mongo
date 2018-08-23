@@ -203,4 +203,4 @@
   systemd:
     daemon_reload: yes
   when:
-    - systemd_service.stdout.find("systemctl") != -1
+    - systemd_service.stdout.find("systemd") != -1
