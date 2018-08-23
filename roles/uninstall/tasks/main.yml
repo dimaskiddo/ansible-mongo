@@ -27,7 +27,7 @@
     - primary
 
 - name: Set System Daemon Facts
-  command: which systemctl || true
+  command: which systemd
   register: systemd_service
 
 - name: Set MongoDB Node Service Facts
