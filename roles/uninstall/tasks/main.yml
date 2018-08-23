@@ -27,11 +27,11 @@
     - primary
 
 - name: Set System Daemon Facts
-  command: which systemd
+  command: "which systemd || true"
   register: systemd_service
 
 - name: Set MongoDB Node Service Facts
-  command: service --status-all | grep mongod
+  command: "service --status-all | grep mongod"
   register: mongod_service
 
 - name: Disable MongoDB Node Service
@@ -43,7 +43,7 @@
     - mongod_service.stdout.find("mongod") != -1
 
 - name: Set MongoDB Router Service Facts
-  command: service --status-all | grep mongos
+  command: "service --status-all | grep mongos"
   register: mongos_service
 
 - name: Disable MongoDB Router Service
