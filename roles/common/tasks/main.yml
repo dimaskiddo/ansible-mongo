@@ -9,6 +9,7 @@
 
 - name: Set Global Facts
   set_fact:
+    mongo_distribution: "{{ mongo_distribution | default(default_value, true) }}"
     mongo_admin_password: "{{ mongo_admin_password | default(default_value, true) }}"
     zfs_backend: "{{ zfs_backend if zfs_block_device is defined else 'false' | default(default_value, true) }}"
     zfs_pool_name: "{{ zfs_pool_name | default(default_value, true) }}"
@@ -131,20 +132,24 @@
     - zfs_backend
     - not arbiter
 
-- name: Install MongoDB Keyring
+- name: Install MongoDB Keyring (MongoDB-ORG)
   apt_key:
     keyserver: keyserver.ubuntu.com
     id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
     state: present
+  when:
+    - mongodb_distribution == 'mongodb-org'
 
-- name: Install MongoDB Repository
+- name: Install MongoDB Repository (MongoDB-ORG)
   lineinfile:
     dest: /etc/apt/sources.list.d/mongodb-org-3.6.list
     line: "deb [arch=amd64] http://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/3.6 multiverse"
     create: yes
     state: present
+  when:
+    - mongodb_distribution == 'mongodb-org'
 
-- name: Install MongoDB Packages
+- name: Install MongoDB Packages (MongoDB-ORG)
   apt:
     name: "{{ item }}"
     force_apt_get: yes
@@ -154,6 +159,12 @@
     state: present
   with_items:
     - mongodb-org
+  when:
+    - mongodb_distribution == 'mongodb-org'
+
+# - name: Install MongoDB Repository (Percona)
+#   when:
+#     - mongodb_distribution == 'percona'
 
 - name: Create MongoDB Run Directory
   file:
