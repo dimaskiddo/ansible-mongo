@@ -220,7 +220,7 @@
   ignore_errors: yes
 
 - name: Wipe ZFS Block Device for MongoDB
-  command: wipefs --all /dev/{{ zfs_block_device }}
+  command: wipefs --all /dev/{{ zfs_block_device }}1
   when:
     - full_uninstall
     - group_names == ['mongoc'] or group_names == ['mongod']
