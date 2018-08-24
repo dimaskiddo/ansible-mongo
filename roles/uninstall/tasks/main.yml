@@ -89,7 +89,7 @@
   with_items:
     - /etc/systemd/system/mongos.service
   when:
-    - systemd_service.stdout.find("systemd") == -1
+    - systemd_service.stdout.find("systemd") != -1
     - mongos_service.stdout.find("mongos") != -1
   ignore_errors: yes
 
