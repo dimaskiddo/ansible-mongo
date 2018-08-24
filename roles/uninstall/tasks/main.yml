@@ -35,14 +35,14 @@
 - name: Set ZFS Block Device Facts
   stat:
     path: "/dev/{{ zfs_block_device }}"
-  register: zfs_block_info
+  register: zfs_block_stat
 
 - name: Set ZFS Backend Facts
   set_fact:
     zfs_backend: 'false'
   when:
     - ansible_distribution_major_version | int < 16
-    - not zfs_block_info.stat.exists
+    - not zfs_block_stat.stat.exists
 
 - name: Set MongoDB Node Service Facts
   command: bash -c "service --status-all | grep mongod || true"
@@ -219,13 +219,23 @@
     - not arbiter
   ignore_errors: yes
 
+- name: Get ZFS Block Device Info
+  parted:
+    device: "/dev/{{ zfs_block_device }}"
+    unit: MiB
+  register: zfs_block_info
+  when:
+    - group_names == ['mongoc'] or group_names == ['mongod']
+    - zfs_backend
+    - not arbiter
+
 - name: Remove ZFS Block Device Partition for MongoDB
   parted:
     device: "/dev/{{ zfs_block_device }}"
     number: "{{ item.num }}"
     state: absent
   with_items:
-    - "{{ zfs_block_info.disk.partitions }}"
+    - "{{ zfs_block_info.partitions }}"
   when:
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
