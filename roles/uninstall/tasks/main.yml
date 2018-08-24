@@ -4,6 +4,8 @@
     msg: "Operating System is not Supported!"
   when:
     - ansible_distribution != 'Ubuntu'
+    - ansible_distribution_major_version | int >= 14
+    - ansible_distribution_minor_version | int == 4
 
 - name: Set Global Facts
   set_fact:
@@ -29,6 +31,12 @@
 - name: Set System Daemon Facts
   command: bash -c "which systemd || true"
   register: systemd_service
+
+- name: Set ZFS Facts
+  set_fact:
+    zfs_backend: 'false'
+  when:
+    - ansible_distribution_major_version | int < 16
 
 - name: Set MongoDB Node Service Facts
   command: bash -c "service --status-all | grep mongod || true"
