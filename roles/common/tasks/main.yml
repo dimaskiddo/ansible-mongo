@@ -163,7 +163,7 @@
 - name: Format ZFS Dataset for MongoDB
   filesystem:
     fstype: xfs
-    dev: /dev/zvol/{{ zfs_pool_name }}/mongodb
+    dev: "/dev/zvol/{{ zfs_pool_name }}/mongodb"
   when:
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
@@ -223,8 +223,8 @@
 
 - name: Mount ZFS Dataset to MongoDB Directory
   mount:
-    path: /var/lib/mongodb
-    src: /dev/zvol/{{ zfs_pool_name }}/mongodb
+    path: "/var/lib/mongodb"
+    src: "/dev/zvol/{{ zfs_pool_name }}/mongodb"
     fstype: xfs
     opts: defaults
     state: mounted
