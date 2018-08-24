@@ -225,7 +225,7 @@
     number: "{{ item.num }}"
     state: absent
   with_items:
-    - "{{ zfs_block_info.partitions }}"
+    - "{{ zfs_block_info.disk.partitions }}"
   when:
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
