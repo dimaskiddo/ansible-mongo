@@ -114,7 +114,7 @@
     - not arbiter
 
 - name: Create ZFS Pool for MongoDB
-  command: zpool create {{ zfs_pool_name }} -O ashift=12 -o compression=lz4 /dev/{{ zfs_block_device }}1
+  command: zpool create {{ zfs_pool_name }} -o ashift=12 -O compression=lz4 /dev/{{ zfs_block_device }}1
   when:
     - zfs_backend
     - not arbiter
