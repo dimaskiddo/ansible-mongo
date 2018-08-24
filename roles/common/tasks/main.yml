@@ -101,8 +101,8 @@
     - zfs_backend
     - not arbiter
 
-- name: Wipe ZFS Block Device Partition for MongoDB
-- parted:
+- name: Remove ZFS Block Device Partition for MongoDB
+  parted:
     device: "/dev/{{ zfs_block_device }}"
     number: "{{ item.num }}"
     state: absent

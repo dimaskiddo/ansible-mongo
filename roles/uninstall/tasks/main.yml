@@ -219,7 +219,19 @@
     - not arbiter
   ignore_errors: yes
 
-- name: Wipe ZFS Block Device for MongoDB
+- name: Remove ZFS Block Device Partition for MongoDB
+  parted:
+    device: "/dev/{{ zfs_block_device }}"
+    number: "{{ item.num }}"
+    state: absent
+  with_items:
+    - "{{ zfs_block_info.partitions }}"
+  when:
+    - group_names == ['mongoc'] or group_names == ['mongod']
+    - zfs_backend
+    - not arbiter
+
+- name: Wipe ZFS Block Device Partition for MongoDB
   command: wipefs --all /dev/{{ zfs_block_device }}1
   when:
     - full_uninstall
