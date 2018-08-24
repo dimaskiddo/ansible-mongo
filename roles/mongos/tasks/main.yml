@@ -41,7 +41,7 @@
   service:
     name: mongos
     enabled: yes
-    state: started
+    state: restarted
 
 - name: Wait For MongoDB Router Service
   wait_for:

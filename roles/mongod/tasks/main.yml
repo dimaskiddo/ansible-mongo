@@ -16,7 +16,7 @@
   service:
     name: mongod
     enabled: yes
-    state: started
+    state: restarted
 
 - name: Wait For MongoDB Node Service
   wait_for:
