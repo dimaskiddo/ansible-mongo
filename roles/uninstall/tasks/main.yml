@@ -202,7 +202,7 @@
   ignore_errors: yes
 
 - name: Remove ZFS Dataset for MongoDB
-  command: zfs destroy -fR {{ zfs_pool_name }}/mongodb
+  command: bash -c "zfs destroy -fR {{ zfs_pool_name }}/mongodb || true"
   when:
     - full_uninstall
     - group_names == ['mongoc'] or group_names == ['mongod']
@@ -211,7 +211,7 @@
   ignore_errors: yes
 
 - name: Remove ZFS Pool for MongoDB
-  command: zpool destroy -f {{ zfs_pool_name }}
+  command: bash -c "zpool destroy -f {{ zfs_pool_name }} || true"
   when:
     - full_uninstall
     - group_names == ['mongoc'] or group_names == ['mongod']
@@ -228,6 +228,7 @@
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - not arbiter
+  ignore_errors: yes
 
 - name: Remove ZFS Block Device Partition for MongoDB
   parted:
@@ -240,6 +241,7 @@
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - not arbiter
+  ignore_errors: yes
 
 - name: Remove Generated Keyfile
   file:
