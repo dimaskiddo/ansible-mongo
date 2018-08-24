@@ -136,13 +136,6 @@
     - zfs_backend
     - not arbiter
 
-- name: Rewipe ZFS Block Device Partition for MongoDB
-  command: wipefs --all /dev/{{ zfs_block_device }}1
-  when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
-    - not arbiter
-
 - name: Get ZFS Block Device Partition Info
   parted:
     device: "/dev/{{ zfs_block_device }}1"
