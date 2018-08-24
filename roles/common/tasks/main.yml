@@ -96,7 +96,7 @@
     - not arbiter
 
 - name: Wipe ZFS Block Device for MongoDB
-  command: wipefs --all {{ zfs_block_device }}
+  command: wipefs --all /dev/{{ zfs_block_device }}
   when:  
     - zfs_backend
     - not arbiter
@@ -139,7 +139,7 @@
     id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
     state: present
   when:
-    - mongodb_distribution == 'mongodb-org'
+    - mongo_distribution == 'mongodb-org'
 
 - name: Install MongoDB Repository (MongoDB-ORG)
   lineinfile:
@@ -148,7 +148,7 @@
     create: yes
     state: present
   when:
-    - mongodb_distribution == 'mongodb-org'
+    - mongo_distribution == 'mongodb-org'
 
 - name: Install MongoDB Packages (MongoDB-ORG)
   apt:
@@ -161,11 +161,11 @@
   with_items:
     - mongodb-org
   when:
-    - mongodb_distribution == 'mongodb-org'
+    - mongo_distribution == 'mongodb-org'
 
 # - name: Install MongoDB Repository (Percona)
 #   when:
-#     - mongodb_distribution == 'percona'
+#     - mongo_distribution == 'percona'
 
 - name: Create MongoDB Run Directory
   file:
