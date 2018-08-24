@@ -130,7 +130,7 @@
     path: /var/lib/mongodb
     state: "{{ item }}"
   with_items:
-    - umounted
+    - unmounted
     - absent
   when:
     - full_uninstall
