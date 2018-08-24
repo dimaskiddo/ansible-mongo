@@ -45,7 +45,7 @@
     - not zfs_block_stat.stat.exists
 
 - name: Set MongoDB Node Service Facts
-  command: bash -c "service mongod status | grep loaded || true"
+  command: bash -c "service mongod status | grep not-found || true"
   register: mongod_service
 
 - name: Disable MongoDB Node Service
@@ -54,10 +54,10 @@
     enabled: no
     state: stopped
   when:
-    - mongod_service.stdout.find("loaded") != -1
+    - mongod_service.stdout.find("not-found") == -1
 
 - name: Set MongoDB Router Service Facts
-  command: bash -c "service mongos status | grep loaded || true"
+  command: bash -c "service mongos status | grep not-found || true"
   register: mongos_service
 
 - name: Disable MongoDB Router Service
@@ -66,7 +66,7 @@
     enabled: no
     state: stopped
   when:
-    - mongos_service.stdout.find("loaded") != -1
+    - mongos_service.stdout.find("not-found") == -1
 
 - name: Remove MongoDB Router Service (Init)
   file:
@@ -75,7 +75,7 @@
   with_items:
     - /etc/init.d/mongos
   when:
-    - mongos_service.stdout.find("loaded") != -1
+    - mongos_service.stdout.find("not-found") == -1
     - systemd_service.stdout.find("systemd") == -1
 
 - name: Remove MongoDB Router Service (SystemD)
@@ -85,7 +85,7 @@
   with_items:
     - /etc/systemd/system/mongos.service
   when:
-    - mongos_service.stdout.find("loaded") != -1
+    - mongos_service.stdout.find("not-found") == -1
     - systemd_service.stdout.find("systemd") != -1
 
 - name: Find Exsisting MongoDB Scripts
