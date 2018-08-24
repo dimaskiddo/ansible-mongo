@@ -1,7 +1,7 @@
 ---
 - name: Set Host Facts
   set_fact:
-    port: "{{ port | default(default_value, true) }}"
+    mongo_port: "{{ mongo_port | default(default_value, true) }}"
 
 - name: Generate MongoDB Router Configuration
   template:
@@ -45,7 +45,7 @@
 
 - name: Wait For MongoDB Router Service
   wait_for:
-    port: "{{ port }}"
+    port: "{{ mongo_port }}"
     delay: 5
     state: present
 
@@ -59,7 +59,7 @@
   run_once: true
 
 - name: Adding MongoDB ReplicaSet Node as Shards
-  command: mongo admin --host localhost --port {{ port }} -u admin -p {{ mongo_admin_password }} /tmp/mongos-shards-join.js
+  command: mongo admin --host localhost --port {{ mongo_port }} -u admin -p {{ mongo_admin_password }} /tmp/mongos-shards-join.js
   run_once: true
   
 - name: Clean-up Generated Script For Adding MongoDB ReplicaSet Node as Shards

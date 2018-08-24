@@ -2,9 +2,9 @@
 {%  if not hostvars[mongod_host].primary %}
 {%    if hostvars[mongod_host].replica_name == replica_name %}
 {%      if not hostvars[mongod_host].arbiter %}
-rs.add("{{ hostvars[mongod_host].ip }}:{{ hostvars[mongod_host].port }}");
+rs.add("{{ hostvars[mongod_host].mongo_ip }}:{{ hostvars[mongod_host].mongo_port }}");
 {%      else %}
-rs.addArb("{{ hostvars[mongod_host].ip }}:{{ hostvars[mongod_host].port }}");
+rs.addArb("{{ hostvars[mongod_host].mongo_ip }}:{{ hostvars[mongod_host].mongo_port }}");
 {%      endif %}
 {%    endif %}
 {%  endif %}
