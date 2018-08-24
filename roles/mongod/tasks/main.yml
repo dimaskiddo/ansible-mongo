@@ -25,12 +25,12 @@
     state: present
 
 - name: Initiate ReplicaSet For MongoDB Node
-  command: mongo admin --host localhost --port {{ mongo_port }} --eval "rs.initiate();"
+  command: mongo admin --port {{ mongo_port }} --eval "rs.initiate();"
   when:
     - primary
 
 - name: Wait For MongoDB Node ReplicaSet Primary Election
-  command: mongo admin --host localhost --port {{ mongo_port }} --eval "rs.isMaster().ismaster;"
+  command: mongo admin --port {{ mongo_port }} --eval "rs.isMaster().ismaster;"
   register: mongod_ismaster_status
   until: mongod_ismaster_status.stdout.find("true") != -1
   retries: 3
@@ -49,7 +49,7 @@
     - primary
 
 - name: Intiate MongoDB Node Superuser
-  command: mongo admin --host localhost --port {{ mongo_port }} /tmp/mongod-create-user.js
+  command: mongo admin --port {{ mongo_port }} /tmp/mongod-create-user.js
   when:
     - primary
   
@@ -71,7 +71,7 @@
     - primary
 
 - name: Adding Other MongoDB Node ReplicaSet
-  command: mongo admin --host localhost --port {{ mongo_port }} -u admin -p {{ mongo_admin_password }} /tmp/mongod-replset-join.js
+  command: mongo admin --port {{ mongo_port }} -u admin -p {{ mongo_admin_password }} /tmp/mongod-replset-join.js
   when:
     - primary
   
