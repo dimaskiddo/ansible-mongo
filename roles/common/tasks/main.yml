@@ -12,6 +12,7 @@
     mongo_distribution: "{{ mongo_distribution | default(default_value, true) }}"
     mongo_admin_password: "{{ mongo_admin_password | default(default_value, true) }}"
     zfs_backend: "{{ zfs_backend if zfs_block_device is defined else 'false' | default(default_value, true) }}"
+    zfs_dataset_size: "{{ zfs_dataset_size if zfs_block_device is defined else '' | default(default_value, true) }}"
     zfs_pool_name: "{{ zfs_pool_name | default(default_value, true) }}"
   delegate_to: "{{ item }}"
   with_items:
@@ -102,7 +103,7 @@
 
 - name: Partition ZFS Block Device for MongoDB
   parted:
-    device: "{{ zfs_block_device }}"
+    device: "/dev/{{ zfs_block_device }}"
     number: 1
     part_type: primary
     part_start: 0%
@@ -113,7 +114,7 @@
     - not arbiter
 
 - name: Create ZFS Pool for MongoDB
-  command: zpool create {{ zfs_pool_name }} -O ashift=12 -o compression=lz4 {{ zfs_block_device }}1
+  command: zpool create {{ zfs_pool_name }} -O ashift=12 -o compression=lz4 /dev/{{ zfs_block_device }}1
   when:
     - zfs_backend
     - not arbiter
