@@ -229,8 +229,7 @@
     opts: defaults
     state: mounted
   when:
-    - group_names == 'mongoc'
-    - group_names == 'mongod'
+    - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - not arbiter
 
