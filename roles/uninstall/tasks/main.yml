@@ -42,7 +42,7 @@
     zfs_backend: 'false'
   when:
     - ansible_distribution_major_version | int < 16
-    - not zfs_block_info.stat.exist
+    - not zfs_block_info.stat.exists
 
 - name: Set MongoDB Node Service Facts
   command: bash -c "service --status-all | grep mongod || true"
@@ -148,7 +148,7 @@
     state: absent
   when:
     - full_uninstall
-    - group_names == 'mongoc' or group_names == 'mongod'
+    - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - not arbiter
   ignore_errors: yes
@@ -205,7 +205,7 @@
   command: zfs destory -fR {{ zfs_pool_name }}/mongodb
   when:
     - full_uninstall
-    - group_names == 'mongoc' or group_names == 'mongod'
+    - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - not arbiter
   ignore_errors: yes
@@ -214,16 +214,16 @@
   command: zpool destory -f {{ zfs_pool_name }}
   when:
     - full_uninstall
-    - group_names == 'mongoc' or group_names == 'mongod'
+    - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - not arbiter
   ignore_errors: yes
 
 - name: Wipe ZFS Block Device for MongoDB
-  command: wipefs --all {{ zfs_block_device }}
+  command: wipefs --all /dev/{{ zfs_block_device }}
   when:
     - full_uninstall
-    - group_names == 'mongoc' or group_names == 'mongod'
+    - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - not arbiter
   ignore_errors: yes
