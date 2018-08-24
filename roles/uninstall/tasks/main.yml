@@ -223,8 +223,7 @@
   command: wipefs --all {{ zfs_block_device }}
   when:
     - full_uninstall
-    - group_names == 'mongoc'
-    - group_names == 'mongod'
+    - group_names == 'mongoc' or group_names == 'mongod'
     - zfs_backend
     - not arbiter
   ignore_errors: yes
