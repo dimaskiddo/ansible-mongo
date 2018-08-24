@@ -231,15 +231,6 @@
     - zfs_backend
     - not arbiter
 
-- name: Wipe ZFS Block Device Partition for MongoDB
-  command: wipefs --all /dev/{{ zfs_block_device }}1
-  when:
-    - full_uninstall
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
-    - not arbiter
-  ignore_errors: yes
-
 - name: Remove Generated Keyfile
   file:
     path: /tmp/keyfile.pem
