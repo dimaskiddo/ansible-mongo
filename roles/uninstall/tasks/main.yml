@@ -71,7 +71,17 @@
     - mongos_service.stdout.find("mongos") != -1
   ignore_errors: yes
 
-- name: Remove MongoDB Router Service
+- name: Remove MongoDB Router Service (Init)
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/init.d/mongos
+  when:
+    - mongos_service.stdout.find("mongos") == -1
+  ignore_errors: yes
+
+- name: Remove MongoDB Router Service (SystemD)
   file:
     path: "{{ item }}"
     state: absent
