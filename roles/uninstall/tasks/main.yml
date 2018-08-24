@@ -45,7 +45,7 @@
     - not zfs_block_stat.stat.exists
 
 - name: Set MongoDB Node Service Facts
-  command: bash -c "service --status-all | grep mongod || true"
+  command: bash -c "service mongod status | grep loaded || true"
   register: mongod_service
 
 - name: Disable MongoDB Node Service
@@ -54,11 +54,11 @@
     enabled: no
     state: stopped
   when:
-    - mongod_service.stdout.find("mongod") != -1
+    - mongod_service.stdout.find("loaded") != -1
   ignore_errors: yes
 
 - name: Set MongoDB Router Service Facts
-  command: bash -c "service --status-all | grep mongos || true"
+  command: bash -c "service mongos status | grep loaded || true"
   register: mongos_service
   ignore_errors: yes
 
@@ -68,7 +68,7 @@
     enabled: no
     state: stopped
   when:
-    - mongos_service.stdout.find("mongos") != -1
+    - mongos_service.stdout.find("loaded") != -1
   ignore_errors: yes
 
 - name: Remove MongoDB Router Service (Init)
@@ -78,8 +78,8 @@
   with_items:
     - /etc/init.d/mongos
   when:
+    - mongos_service.stdout.find("loaded") != -1
     - systemd_service.stdout.find("systemd") == -1
-    - mongos_service.stdout.find("mongos") != -1
   ignore_errors: yes
 
 - name: Remove MongoDB Router Service (SystemD)
@@ -89,8 +89,8 @@
   with_items:
     - /etc/systemd/system/mongos.service
   when:
+    - mongos_service.stdout.find("loaded") != -1
     - systemd_service.stdout.find("systemd") != -1
-    - mongos_service.stdout.find("mongos") != -1
   ignore_errors: yes
 
 - name: Find Exsisting MongoDB Scripts
@@ -123,22 +123,6 @@
     state: absent
   with_items:
     - "{{ mongodb_config_to_delete['files'] }}"
-  ignore_errors: yes
-
-- name: Find Exsisting MongoDB Files
-  find:
-    paths: /var/lib/mongodb
-    patterns: "*"
-    use_regex: true
-  register: mongodb_files_to_delete
-  ignore_errors: yes
-
-- name: Remove Exsisting MongoDB Files
-  file:
-    path: "{{ item['path'] }}"
-    state: absent
-  with_items:
-    - "{{ mongodb_files_to_delete['files'] }}"
   ignore_errors: yes
 
 - name: Remove MongoDB Database Directories

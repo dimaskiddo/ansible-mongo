@@ -62,8 +62,8 @@
   command: mongo admin --port {{ mongo_port }} -u admin -p {{ mongo_admin_password }} /tmp/mongos-shards-join.js
   run_once: true
   
-# - name: Clean-up Generated Script For Adding MongoDB ReplicaSet Node as Shards
-#   file:
-#     path: /tmp/mongos-shards-join.js
-#     state: absent
-#   run_once: true
+- name: Clean-up Generated Script For Adding MongoDB ReplicaSet Node as Shards
+  file:
+    path: /tmp/mongos-shards-join.js
+    state: absent
+  run_once: true
