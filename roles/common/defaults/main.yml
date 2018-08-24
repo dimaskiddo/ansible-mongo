@@ -11,9 +11,6 @@ mongo_admin_password: 'admin'
 # Default Value for Storage Backend Using ZFS
 zfs_backend: 'false'
 
-# Default Value for ZFS Dataset Size
-zfs_dateset_size: ''
-
 # Default Value for ZFS Pool Name
 zfs_pool_name: 'data'
 
