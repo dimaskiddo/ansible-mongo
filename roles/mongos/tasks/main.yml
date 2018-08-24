@@ -11,25 +11,25 @@
     group: root
     mode: 0644
 
-# - name: Generate MongoDB Router Service
-#   template:
-#     src: mongos.j2
-#     dest: /etc/init.d/mongos
-#     owner: root
-#     group: root
-#     mode: 0755
-#   when:
-#     - systemd_service.stdout.find("systemd") == -1
+- name: Generate MongoDB Router Service (Init)
+  template:
+    src: mongos.j2
+    dest: /etc/init.d/mongos
+    owner: root
+    group: root
+    mode: 0755
+  when:
+    - systemd_service.stdout.find("systemd") == -1
 
-- name: Generate MongoDB Router Service
+- name: Generate MongoDB Router Service (SystemD)
   template:
     src: mongos.service.j2
     dest: /etc/systemd/system/mongos.service
     owner: root
     group: root
     mode: 0644
-  # when:
-  #   - systemd_service.stdout.find("systemd") != -1
+  when:
+    - systemd_service.stdout.find("systemd") != -1
 
 - name: Reload MongoDB Router Service
   systemd:
