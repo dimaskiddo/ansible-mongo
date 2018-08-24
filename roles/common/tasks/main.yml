@@ -204,14 +204,6 @@
 #   when:
 #     - mongo_distribution == 'percona'
 
-- name: Create MongoDB Run Directory
-  file:
-    path: /var/run/mongodb
-    state: directory
-    owner: mongodb
-    group: mongodb
-    recurse: true
-
 - name: Mount ZFS Dataset to MongoDB Directory
   mount:
     path: /var/lib/mongodb
@@ -219,11 +211,22 @@
     fstype: xfs
     opts: defaults
     passno: 2
-    state: mounted
+    state: "{{ item }}"
+  with_items:
+    - present
+    - mounted
   when:
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - not arbiter
+
+- name: Create MongoDB Run Directory
+  file:
+    path: /var/run/mongodb
+    state: directory
+    owner: mongodb
+    group: mongodb
+    recurse: true
 
 - name: Create MongoDB Parent Directory
   file:
