@@ -101,7 +101,7 @@
 
 - name: Find Exsisting MongoDB Files
   find:
-    paths: /var/mongodb
+    paths: /var/lib/mongodb
     patterns: "*"
     use_regex: true
   register: mongodb_files_to_delete
@@ -118,13 +118,13 @@
     path: "{{ item }}"
     state: absent
   with_items:
-    - /var/mongodb/data
-    - /var/mongodb/log
-    - /var/mongodb/pki
+    - /var/lib/mongodb/data
+    - /var/lib/mongodb/log
+    - /var/lib/mongodb/pki
 
 - name: Unmount ZFS Dataset from MongoDB Directory
   mount:
-    path: /var/mongodb
+    path: /var/lib/mongodb
     src: /dev/zvol/{{ zfs_pool_name }}/mongodb
     fstype: xfs
     opts: defaults
@@ -139,7 +139,7 @@
     path: "{{ item }}"
     state: absent
   with_items:
-    - /var/mongodb
+    - /var/lib/mongodb
   when:
     - not zfs_backend
 

@@ -165,7 +165,7 @@
 
 - name: Create MongoDB Parent Directory
   file:
-    path: /var/mongodb
+    path: /var/lib/mongodb
     state: directory
     owner: mongodb
     group: mongodb
@@ -175,7 +175,7 @@
 
 - name: Mount ZFS Dataset to MongoDB Directory
   mount:
-    path: /var/mongodb
+    path: /var/lib/mongodb
     src: /dev/zvol/{{ zfs_pool_name }}/mongodb
     fstype: xfs
     opts: defaults
@@ -192,14 +192,14 @@
     group: mongodb
     recurse: true
   with_items:
-    - /var/mongodb/data
-    - /var/mongodb/log
-    - /var/mongodb/pki
+    - /var/lib/mongodb/data
+    - /var/lib/mongodb/log
+    - /var/lib/mongodb/pki
 
 - name: Distribute MongoDB Keyfile
   copy:
     src: /tmp/keyfile.pem
-    dest: /var/mongodb/pki/keyfile.pem
+    dest: /var/lib/mongodb/pki/keyfile.pem
     owner: mongodb
     group: mongodb
     mode: 0400

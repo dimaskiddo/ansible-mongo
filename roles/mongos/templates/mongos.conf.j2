@@ -1,7 +1,7 @@
 # Shere to write logging data.
 systemLog:
   destination: file
-  path: /var/mongodb/log/mongos.log
+  path: /var/lib/mongodb/log/mongos.log
   logAppend: true
 
 # How the process runs
@@ -16,16 +16,16 @@ net:
 
 # How to secure it
 security:
-  keyFile: /var/mongodb/pki/keyfile.pem
+  keyFile: /var/lib/mongodb/pki/keyfile.pem
 
 # How shard runs
 sharding:
 {% set mongoc_hosts = '' %}
 {% for mongoc_host in groups['mongoc'] %}
 {%  if loop.last %}
-{%    set mongoc_hosts = mongoc_hosts + mongoc_host + ':27011' %}
+{%    set mongoc_hosts = mongoc_hosts + hostvars[mongoc_host].mongo_ip + ':' + hostvars[mongoc_host].mongo_port %}
   configDB: repl-config/{{ mongoc_hosts }}
 {%  else %}
-{%    set mongoc_hosts = mongoc_hosts + mongoc_host + ':27011,' %}
+{%    set mongoc_hosts = mongoc_hosts + hostvars[mongoc_host].mongo_ip + ':' + hostvars[mongoc_host].mongo_port + ',' %}
 {%  endif %}
 {% endfor %}

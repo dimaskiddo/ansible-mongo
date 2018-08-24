@@ -1,12 +1,12 @@
 # Shere to write logging data.
 systemLog:
   destination: file
-  path: /var/mongodb/log/mongod.log
+  path: /var/lib/mongodb/log/mongod.log
   logAppend: true
 
 # Where and how to store data.
 storage:
-  dbPath: /var/mongodb/data
+  dbPath: /var/lib/mongodb/data
   journal:
     enabled: true
 
@@ -23,7 +23,7 @@ net:
 # How to secure it
 security:
   authorization: enabled
-  keyFile: /var/mongodb/pki/keyfile.pem
+  keyFile: /var/lib/mongodb/pki/keyfile.pem
 
 # Where to replicate
 replication:
