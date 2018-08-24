@@ -162,8 +162,9 @@
 
 - name: Format ZFS Dataset for MongoDB
   filesystem:
-    fstype: xfs
     dev: "/dev/zvol/{{ zfs_pool_name }}/mongodb"
+    fstype: xfs
+    force: yes
   when:
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
