@@ -202,7 +202,7 @@
   ignore_errors: yes
 
 - name: Remove ZFS Dataset for MongoDB
-  command: zfs destory -fR {{ zfs_pool_name }}/mongodb
+  command: zfs destroy -fR {{ zfs_pool_name }}/mongodb
   when:
     - full_uninstall
     - group_names == ['mongoc'] or group_names == ['mongod']
@@ -211,7 +211,7 @@
   ignore_errors: yes
 
 - name: Remove ZFS Pool for MongoDB
-  command: zpool destory -f {{ zfs_pool_name }}
+  command: zpool destroy -f {{ zfs_pool_name }}
   when:
     - full_uninstall
     - group_names == ['mongoc'] or group_names == ['mongod']
