@@ -55,12 +55,10 @@
     state: stopped
   when:
     - mongod_service.stdout.find("loaded") != -1
-  ignore_errors: yes
 
 - name: Set MongoDB Router Service Facts
   command: bash -c "service mongos status | grep loaded || true"
   register: mongos_service
-  ignore_errors: yes
 
 - name: Disable MongoDB Router Service
   service:
@@ -69,7 +67,6 @@
     state: stopped
   when:
     - mongos_service.stdout.find("loaded") != -1
-  ignore_errors: yes
 
 - name: Remove MongoDB Router Service (Init)
   file:
@@ -80,7 +77,6 @@
   when:
     - mongos_service.stdout.find("loaded") != -1
     - systemd_service.stdout.find("systemd") == -1
-  ignore_errors: yes
 
 - name: Remove MongoDB Router Service (SystemD)
   file:
@@ -91,7 +87,6 @@
   when:
     - mongos_service.stdout.find("loaded") != -1
     - systemd_service.stdout.find("systemd") != -1
-  ignore_errors: yes
 
 - name: Find Exsisting MongoDB Scripts
   find:
@@ -99,7 +94,6 @@
     patterns: "mongo*"
     use_regex: true
   register: mongodb_scripts_to_delete
-  ignore_errors: yes
 
 - name: Remove Exsisting MongoDB Scripts
   file:
@@ -107,7 +101,6 @@
     state: absent
   with_items:
     - "{{ mongodb_scripts_to_delete['files'] }}"
-  ignore_errors: yes
 
 - name: Find Exsisting MongoDB Configuration
   find:
@@ -115,7 +108,6 @@
     patterns: "mongo*"
     use_regex: true
   register: mongodb_config_to_delete
-  ignore_errors: yes
 
 - name: Remove Exsisting MongoDB Configuration
   file:
@@ -123,7 +115,6 @@
     state: absent
   with_items:
     - "{{ mongodb_config_to_delete['files'] }}"
-  ignore_errors: yes
 
 - name: Remove MongoDB Database Directories
   file:
@@ -133,7 +124,6 @@
     - /var/lib/mongodb/data
     - /var/lib/mongodb/log
     - /var/lib/mongodb/pki
-  ignore_errors: yes
 
 - name: Unmount ZFS Dataset from MongoDB Directory
   mount:
@@ -147,7 +137,6 @@
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - not arbiter
-  ignore_errors: yes
 
 - name: Remove MongoDB Parrent Directory
   file:
@@ -157,7 +146,6 @@
     - /var/lib/mongodb
   when:
     - not zfs_backend
-  ignore_errors: yes
 
 - name: Remove MongoDB Run Directory
   file:
@@ -165,7 +153,6 @@
     state: absent
   with_items:
     - /var/run/mongodb
-  ignore_errors: yes
 
 - name: Uninstall MongoDB Packages
   apt:
@@ -179,7 +166,6 @@
     - mongodb-org
   when:
     - full_uninstall
-  ignore_errors: yes
 
 - name: Uninstall MongoDB Repository
   file:
@@ -187,7 +173,6 @@
     state: absent
   when:
     - full_uninstall
-  ignore_errors: yes
 
 - name: Uninstall MongoDB Keyring
   apt_key:
@@ -195,7 +180,6 @@
     state: absent
   when:
     - full_uninstall
-  ignore_errors: yes
 
 - name: Remove ZFS Dataset for MongoDB
   command: bash -c "zfs destroy -fR {{ zfs_pool_name }}/mongodb || true"
@@ -204,7 +188,6 @@
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - not arbiter
-  ignore_errors: yes
 
 - name: Remove ZFS Pool for MongoDB
   command: bash -c "zpool destroy -f {{ zfs_pool_name }} || true"
@@ -213,7 +196,6 @@
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - not arbiter
-  ignore_errors: yes
 
 - name: Get ZFS Block Device Info
   parted:
@@ -224,7 +206,6 @@
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - not arbiter
-  ignore_errors: yes
 
 - name: Remove ZFS Block Device Partition for MongoDB
   parted:
@@ -237,7 +218,6 @@
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - not arbiter
-  ignore_errors: yes
 
 - name: Remove Generated Keyfile
   file:
@@ -247,11 +227,9 @@
   with_items:
     - localhost
   run_once: true
-  ignore_errors: yes
 
 - name: Reload System Daemon
   systemd:
     daemon_reload: yes
   when:
     - systemd_service.stdout.find("systemd") != -1
-  ignore_errors: yes

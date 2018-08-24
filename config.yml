@@ -1,25 +1,30 @@
 ---
 - hosts: localhost
   connection: local
+  any_errors_fatal: true
   roles:
   - role: local
 
 - hosts: all
   remote_user: "{{ ssh_remote_user }}"
+  any_errors_fatal: true
   roles:
   - role: common
 
 - hosts: mongoc
   remote_user: "{{ ssh_remote_user }}"
+  any_errors_fatal: true
   roles:
   - role: mongoc
 
 - hosts: mongod
   remote_user: "{{ ssh_remote_user }}"
+  any_errors_fatal: true
   roles:
   - role: mongod
 
 - hosts: mongos
   remote_user: "{{ ssh_remote_user }}"
+  any_errors_fatal: true
   roles:
   - role: mongos
