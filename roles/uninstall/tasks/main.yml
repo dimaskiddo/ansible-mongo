@@ -127,10 +127,7 @@
 
 - name: Unmount ZFS Dataset from MongoDB Directory
   mount:
-    path: "/var/lib/mongodb"
-    src: "/dev/zvol/{{ zfs_pool_name }}/mongodb"
-    fstype: xfs
-    opts: defaults
+    path: /var/lib/mongodb
     state: absent
   when:
     - full_uninstall

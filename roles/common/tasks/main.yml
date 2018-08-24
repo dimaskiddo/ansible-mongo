@@ -212,6 +212,19 @@
     group: mongodb
     recurse: true
 
+- name: Mount ZFS Dataset to MongoDB Directory
+  mount:
+    path: /var/lib/mongodb
+    src: "/dev/zvol/{{ zfs_pool_name }}/mongodb"
+    fstype: xfs
+    opts: defaults
+    passno: 2
+    state: mounted
+  when:
+    - group_names == ['mongoc'] or group_names == ['mongod']
+    - zfs_backend
+    - not arbiter
+
 - name: Create MongoDB Parent Directory
   file:
     path: /var/lib/mongodb
@@ -219,20 +232,6 @@
     owner: mongodb
     group: mongodb
     recurse: true
-  when:
-    - not zfs_backend
-
-- name: Mount ZFS Dataset to MongoDB Directory
-  mount:
-    path: "/var/lib/mongodb"
-    src: "/dev/zvol/{{ zfs_pool_name }}/mongodb"
-    fstype: xfs
-    opts: defaults
-    state: mounted
-  when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
-    - not arbiter
 
 - name: Create MongoDB Database Directories
   file:
