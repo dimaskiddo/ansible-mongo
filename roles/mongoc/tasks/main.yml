@@ -1,74 +1,12 @@
 ---
-- name: Set Host Facts
-  set_fact:
-    mongo_port: "{{ mongo_port | default(default_value, true) }}"
+- include: facts.yml
 
-- name: Generate MongoDB Config Server Configuration
-  template:
-    src: mongod.conf.j2
-    dest: /etc/mongod.conf
-    owner: root
-    group: root
-    mode: 0644
+- include: mongoc_configs.yml
 
-- name: Enable MongoDB Config Server Service
-  service:
-    name: mongod
-    enabled: yes
-    state: restarted
+- include: mongoc_services.yml
 
-- name: Wait For MongoDB Config Server Service
-  wait_for:
-    port: "{{ mongo_port }}"
-    delay: 5
-    state: present
+- include: mongoc_replicaset_init.yml
 
-- name: Initiate ReplicaSet For MongoDB Config Server
-  command: mongo admin --port {{ mongo_port }} --eval "rs.initiate();"
-  run_once: true
+- include: mongoc_create_admin.yml
   
-- name: Wait For MongoDB Config Server ReplicaSet Primary Election
-  command: mongo admin --port {{ mongo_port }} --eval "rs.isMaster().ismaster;"
-  register: mongoc_ismaster_status
-  until: mongoc_ismaster_status.stdout.find("true") != -1
-  retries: 3
-  delay: 5
-  run_once: true
-
-- name: Generate Script For Intiate MongoDB Config Server Superuser
-  template:
-    src: mongoc-create-user.js.j2
-    dest: /tmp/mongoc-create-user.js
-    owner: root
-    group: root
-    mode: 0644
-  run_once: true
-  
-- name: Intiate MongoDB Config Server Superuser
-  command: mongo admin --port {{ mongo_port }} /tmp/mongoc-create-user.js
-  run_once: true
-  
-- name: Clean-up Generated Script For Intiate MongoDB Config Server Superuser
-  file:
-    path: /tmp/mongoc-create-user.js
-    state: absent
-  run_once: true
-  
-- name: Generate Script For Adding Other MongoDB Config Server ReplicaSet
-  template:
-    src: mongoc-replset-join.js.j2
-    dest: /tmp/mongoc-replset-join.js
-    owner: root
-    group: root
-    mode: 0644
-  run_once: true
-  
-- name: Adding Other MongoDB Config Server ReplicaSet
-  command: mongo admin --port {{ mongo_port }} -u admin -p {{ mongo_admin_password }} /tmp/mongoc-replset-join.js
-  run_once: true
-  
-- name: Clean-up Generated Script For Adding Other MongoDB Config Server ReplicaSet
-  file:
-    path: /tmp/mongoc-replset-join.js
-    state: absent
-  run_once: true
+- include: mongoc_replicaset_add.yml

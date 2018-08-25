@@ -1,83 +1,12 @@
 ---
-- name: Set Host Facts
-  set_fact:
-    mongo_port: "{{ mongo_port | default(default_value, true) }}"
-    replica_name: "{{ replica_name | default(default_value, true) }}"
+- include: facts.yml
 
-- name: Generate MongoDB Node Configuration
-  template:
-    src: mongod.conf.j2
-    dest: /etc/mongod.conf
-    owner: root
-    group: root
-    mode: 0644
+- include: mongod_configs.yml
 
-- name: Enable MongoDB Node Service
-  service:
-    name: mongod
-    enabled: yes
-    state: restarted
+- include: mongod_services.yml
 
-- name: Wait For MongoDB Node Service
-  wait_for:
-    port: "{{ mongo_port }}"
-    delay: 5
-    state: present
+- include: mongod_replicaset_init.yml
 
-- name: Initiate ReplicaSet For MongoDB Node
-  command: mongo admin --port {{ mongo_port }} --eval "rs.initiate();"
-  when:
-    - primary
+- include: mongod_create_admin.yml
 
-- name: Wait For MongoDB Node ReplicaSet Primary Election
-  command: mongo admin --port {{ mongo_port }} --eval "rs.isMaster().ismaster;"
-  register: mongod_ismaster_status
-  until: mongod_ismaster_status.stdout.find("true") != -1
-  retries: 3
-  delay: 5
-  when:
-    - primary
-
-- name: Generate Script For Intiate MongoDB Node Superuser
-  template:
-    src: mongod-create-user.js.j2
-    dest: /tmp/mongod-create-user.js
-    owner: root
-    group: root
-    mode: 0644
-  when:
-    - primary
-
-- name: Intiate MongoDB Node Superuser
-  command: mongo admin --port {{ mongo_port }} /tmp/mongod-create-user.js
-  when:
-    - primary
-  
-- name: Clean-up Generated Script For Intiate MongoDB Node Superuser
-  file:
-    path: /tmp/mongod-create-user.js
-    state: absent
-  when:
-    - primary
-
-- name: Generate Script For Adding Other MongoDB Node ReplicaSet
-  template:
-    src: mongod-replset-join.js.j2
-    dest: /tmp/mongod-replset-join.js
-    owner: root
-    group: root
-    mode: 0644
-  when:
-    - primary
-
-- name: Adding Other MongoDB Node ReplicaSet
-  command: mongo admin --port {{ mongo_port }} -u admin -p {{ mongo_admin_password }} /tmp/mongod-replset-join.js
-  when:
-    - primary
-  
-- name: Clean-up Generated Script For Adding Other MongoDB Node ReplicaSet
-  file:
-    path: /tmp/mongod-replset-join.js
-    state: absent
-  when:
-    - primary
+- include: mongod_replicaset_add.yml
