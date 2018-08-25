@@ -1,0 +1,8 @@
+---
+- name: Remove MongoDB Parent Directories
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/lib/mongodb
+    - /var/run/mongodb

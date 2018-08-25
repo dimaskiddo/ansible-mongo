@@ -1,0 +1,31 @@
+---
+- name: Uninstall MongoDB Packages
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    autoremove: yes
+    autoclean: yes
+    purge: yes
+    state: absent
+  with_items:
+    - mongodb-org
+    - mongodb-org-server
+    - mongodb-org-mongos
+    - mongodb-org-shell
+    - mongodb-org-tools
+  when:
+    - full_uninstall
+
+- name: Uninstall MongoDB Repository
+  file:
+    path: /etc/apt/sources.list.d/mongodb-org-3.6.list
+    state: absent
+  when:
+    - full_uninstall
+
+- name: Uninstall MongoDB Keyring
+  apt_key:
+    id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+    state: absent
+  when:
+    - full_uninstall

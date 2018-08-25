@@ -1,0 +1,33 @@
+---
+- name: Disable MongoDB Node Service
+  service:
+    name: mongod
+    enabled: no
+    state: stopped
+  when:
+    - not mongod_service_info.stdout.find("not-found")
+
+- name: Disable MongoDB Router Service
+  service:
+    name: mongos
+    enabled: no
+    state: stopped
+  when:
+    - not mongos_service_info.stdout.find("not-found")
+
+- name: Remove MongoDB Router Service (Init)
+  file:
+    path: /etc/init.d/mongos
+    state: absent
+  when:
+    - service_init_status.stat.islnk is defined
+    - not service_init_status.stat.islnk
+
+- name: Remove MongoDB Router Service (SystemD)
+  file:
+    path: /etc/systemd/system/mongos.service
+    state: absent
+  when:
+    - service_init_status.stat.islnk is defined
+    - service_init_status.stat.islnk
+  notify: "Daemon Reload"

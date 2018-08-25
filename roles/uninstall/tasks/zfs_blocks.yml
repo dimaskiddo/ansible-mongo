@@ -1,0 +1,28 @@
+---
+- name: Remove ZFS Dataset for MongoDB
+  command: bash -c "zfs destroy -fR {{ zfs_pool_name }}/mongodb"
+  when:
+    - full_uninstall
+    - group_names == ['mongoc'] or group_names == ['mongod']
+    - zfs_backend
+    - zfs_dataset_lists.stdout.find("{{ zfs_pool_name }}/mongodb")
+
+- name: Remove ZFS Pool for MongoDB
+  command: bash -c "zpool destroy -f {{ zfs_pool_name }}"
+  when:
+    - full_uninstall
+    - group_names == ['mongoc'] or group_names == ['mongod']
+    - zfs_backend
+    - zfs_dataset_lists.stdout.find("{{ zfs_pool_name }}")
+
+- name: Remove ZFS Block Device Partition for MongoDB
+  parted:
+    device: "/dev/{{ zfs_block_device }}"
+    number: "{{ item.num }}"
+    state: absent
+  with_items:
+    - "{{ zfs_block_info.partitions }}"
+  when:
+    - full_uninstall
+    - group_names == ['mongoc'] or group_names == ['mongod']
+    - zfs_backend
