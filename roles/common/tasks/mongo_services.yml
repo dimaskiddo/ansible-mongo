@@ -1,10 +1,16 @@
 ---
-- name: Reload MongoDB Node Service
+- name: Reload MongoDB Service
   systemd:
     daemon_reload: yes
   when:
     - service_init_status.stat.islnk is defined
     - service_init_status.stat.islnk
+
+- name: Get MongoDB Node Service Info
+  command: bash -c "service mongod status | grep not-found || true"
+  register: mongod_service_info
+  when:
+    - service_init_status.stat.exists
 
 - name: Disable MongoDB Node Service
   service:
@@ -12,4 +18,18 @@
     enabled: no
     state: stopped
   when:
+    - mongod_service_info.stdout.find("not-found") == -1
+
+- name: Get MongoDB Router Service Info
+  command: bash -c "service mongos status | grep not-found || true"
+  register: mongos_service_info
+  when:
     - service_init_status.stat.exists
+
+- name: Disable MongoDB Router Service
+  service:
+    name: mongos
+    enabled: no
+    state: stopped
+  when:
+    - mongos_service_info.stdout.find("not-found") == -1

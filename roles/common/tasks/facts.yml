@@ -54,9 +54,3 @@
     zfs_backend: 'false'
   when:
     - arbiter
-
-- name: Get ZFS Dataset Lists
-  command: zfs list
-  register: zfs_dataset_lists
-  when:
-    - zfs_backend

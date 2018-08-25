@@ -3,6 +3,8 @@
 
 - include: os_packages.yml
 
+- include: openssl_packages.yml
+
 - include: python_packages.yml
 
 - include: zfs_packages.yml

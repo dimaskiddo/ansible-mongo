@@ -11,18 +11,6 @@
     path: /sbin/init
   register: service_init_status
 
-- name: Get MongoDB Node Service Info
-  command: bash -c "service mongod status | grep not-found || true"
-  register: mongod_service_info
-  when:
-    - service_init_status.stat.exists
-
-- name: Get MongoDB Router Service Info
-  command: bash -c "service mongos status | grep not-found || true"
-  register: mongos_service_info
-  when:
-    - service_init_status.stat.exists
-
 - name: Get ZFS Block Device Status
   stat:
     path: "/dev/{{ zfs_block_device }}"
@@ -65,9 +53,3 @@
     zfs_backend: 'false'
   when:
     - arbiter
-
-- name: Get ZFS Dataset Lists
-  command: zfs list
-  register: zfs_dataset_lists
-  when:
-    - zfs_backend

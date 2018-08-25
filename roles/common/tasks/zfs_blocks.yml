@@ -1,4 +1,16 @@
 ---
+- name: Get ZFS Pool Lists
+  command: zpool list
+  register: zfs_pool_lists
+  when:
+    - zfs_backend
+
+- name: Get ZFS Dataset Lists
+  command: zfs list
+  register: zfs_dataset_lists
+  when:
+    - zfs_backend
+
 - name: Remove Exsisting ZFS Block Device Partition for MongoDB
   parted:
     device: "/dev/{{ zfs_block_device }}"
