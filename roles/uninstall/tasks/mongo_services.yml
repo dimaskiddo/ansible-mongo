@@ -5,7 +5,7 @@
     enabled: no
     state: stopped
   when:
-    - 'not-found' not in mongod_service_info.stdout
+    - "not-found" not in mongod_service_info.stdout
 
 - name: Disable MongoDB Router Service
   service:
@@ -13,7 +13,7 @@
     enabled: no
     state: stopped
   when:
-    - 'not-found' not in mongos_service_info.stdout
+    - "not-found" not in mongos_service_info.stdout
 
 - name: Remove MongoDB Router Service (Init)
   file:
