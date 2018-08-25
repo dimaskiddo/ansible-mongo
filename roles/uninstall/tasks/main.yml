@@ -18,11 +18,11 @@
 - include: zfs_mounts.yml
   when:
     - full_uninstall
-    - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
+    - group_names == ['mongoc'] or group_names == ['mongod']
 
 - include: zfs_blocks.yml
   when:
     - full_uninstall
-    - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
+    - group_names == ['mongoc'] or group_names == ['mongod']

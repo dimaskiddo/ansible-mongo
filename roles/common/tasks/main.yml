@@ -7,18 +7,18 @@
 
 - include: zfs_packages.yml
   when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
+    - group_names == ['mongoc'] or group_names == ['mongod']
 
 - include: zfs_blocks.yml
   when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
+    - group_names == ['mongoc'] or group_names == ['mongod']
 
 - include: zfs_mounts.yml
   when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
+    - group_names == ['mongoc'] or group_names == ['mongod']
 
 - include: mongo_packages.yml
 
