@@ -16,6 +16,7 @@
   when:
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
+    - zfs_block_info.partitions is defined
     - zfs_block_wipe
 
 - name: Create ZFS Block Device Partition for MongoDB
