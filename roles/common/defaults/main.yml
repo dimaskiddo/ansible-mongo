@@ -2,8 +2,11 @@
 # Default Value for Host IP
 mongo_ip: "{{ ansible_default_ipv4.address }}"
 
-# Default Value for MongoDB Distribution Type
+# Default Value for MongoDB Distribution
 mongo_distribution: 'mongodb-org'
+
+# Default Value for MongoDB Version
+mongo_version: '3.6'
 
 # Default Value MongoDB Admin Password
 mongo_admin_password: 'admin'
