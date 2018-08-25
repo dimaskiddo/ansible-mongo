@@ -1,10 +1,4 @@
 ---
-- hosts: localhost
-  connection: local
-  any_errors_fatal: true
-  roles:
-  - role: local
-
 - hosts: all
   remote_user: "{{ ssh_remote_user }}"
   any_errors_fatal: true

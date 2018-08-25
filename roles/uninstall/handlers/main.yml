@@ -2,3 +2,6 @@
 - name: Daemon Reload
   systemd:
     daemon_reload: yes
+  when:
+    - service_init_status.stat.islnk is defined
+    - service_init_status.stat.islnk

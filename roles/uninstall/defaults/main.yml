@@ -2,6 +2,9 @@
 # Default Value for Full Uninstall
 full_uninstall: 'false'
 
+# Default Value for MongoDB Distribution Type
+mongo_distribution: 'mongodb-org'
+
 # Default Value for Storage Backend Using ZFS
 zfs_backend: 'false'
 

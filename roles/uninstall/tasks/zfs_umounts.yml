@@ -1,9 +1,0 @@
----
-- name: Unmount ZFS Dataset from MongoDB Directory
-  mount:
-    path: /var/lib/mongodb
-    state: absent
-  when:
-    - full_uninstall
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend

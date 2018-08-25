@@ -42,6 +42,7 @@
 - name: Set Host Facts
   set_fact:
     full_uninstall: "{{ full_uninstall | default(default_value, true) }}"
+    mongo_distribution: "{{ mongo_distribution | default(default_value, true) }}"
     zfs_backend: "{{ zfs_backend if zfs_block_device is defined else 'false' | default(default_value, true) }}"
     zfs_pool_name: "{{ zfs_pool_name | default(default_value, true) }}"
     primary: "{{ primary | default(default_value, true) }}"

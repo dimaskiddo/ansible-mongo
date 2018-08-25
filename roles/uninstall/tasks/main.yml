@@ -5,14 +5,14 @@
 
 - include: mongo_files.yml
 
-- include: mongo_dirs_childs.yml
+- include: mongo_keys.yml
 
-- include: zfs_umounts.yml
+- include: mongo_dirs_childs.yml
 
 - include: mongo_dirs_parents.yml
 
 - include: mongo_packages.yml
 
-- include: zfs_blocks.yml
+- include: zfs_mounts.yml
 
-- include: mongo_keys.yml
+- include: zfs_blocks.yml
