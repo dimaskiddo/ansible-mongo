@@ -1,7 +1,7 @@
 ---
 - include: facts.yml
 
-- include: mongos_config.yml
+- include: mongos_configs.yml
 
 - include: mongos_services.yml
 
