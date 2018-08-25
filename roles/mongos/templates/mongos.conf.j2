@@ -12,7 +12,7 @@ processManagement:
 # Network interfaces
 net:
   port: {{ mongo_port }}
-  bindIp: {{ mongo_ip }},localhost
+  bindIp: 0.0.0.0,localhost
 
 # How to secure it
 security:
