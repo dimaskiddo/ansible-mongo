@@ -13,19 +13,13 @@
     - mongodb-org-mongos
     - mongodb-org-shell
     - mongodb-org-tools
-  when:
-    - full_uninstall
 
 - name: Uninstall MongoDB Repository
   file:
     path: "/etc/apt/sources.list.d/mongodb-org-{{ mongo_version }}.list"
     state: absent
-  when:
-    - full_uninstall
 
 - name: Uninstall MongoDB Keyring
   apt_key:
     id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
     state: absent
-  when:
-    - full_uninstall

@@ -12,7 +12,17 @@
 - include: mongo_dirs_parents.yml
 
 - include: mongo_packages.yml
+  when:
+    - full_uninstall
 
 - include: zfs_mounts.yml
+  when:
+    - full_uninstall
+    - group_names == ['mongoc'] or group_names == ['mongod']
+    - zfs_backend
 
 - include: zfs_blocks.yml
+  when:
+    - full_uninstall
+    - group_names == ['mongoc'] or group_names == ['mongod']
+    - zfs_backend

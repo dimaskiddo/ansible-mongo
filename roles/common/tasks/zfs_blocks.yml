@@ -14,8 +14,6 @@
   with_items:
     - "{{ zfs_block_info.partitions }}"
   when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
     - zfs_block_info.partitions is defined
     - zfs_block_wipe
 
@@ -27,88 +25,61 @@
     part_start: 0%
     part_end: 100%
     state: present
-  when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
 
 - name: Get ZFS Block Device Partition Info
   parted:
     device: "/dev/{{ zfs_block_device }}1"
     unit: MiB
   register: zfs_partition_info
-  when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
 
 - name: Get ZFS Pool Lists
   command: zpool list
   register: zfs_pool_lists
-  when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
 
 - name: Fail if ZFS Pool Already Exists
   fail:
     msg: "ZFS Pool Already Exists, Please Remove The Pool Manually!"
   when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
     - zfs_pool_lists.stdout.find(zfs_pool_name) != -1
     - not zfs_pool_wipe
 
 - name: Remove ZFS Pool for MongoDB
   command: zpool destroy -f {{ zfs_pool_name }}
   when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
     - zfs_pool_lists.stdout.find(zfs_pool_name) != -1
     - zfs_pool_wipe
 
 - name: Create ZFS Pool for MongoDB
   command: zpool create {{ zfs_pool_name }} -o ashift=12 -O compression=lz4 /dev/{{ zfs_block_device }}1
   when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
     - zfs_pool_lists.stdout.find(zfs_pool_name) == -1
 
 - name: Get ZFS Dataset Lists
   command: zfs list
   register: zfs_dataset_lists
-  when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
 
 - name: Fail if ZFS Dataset Already Exists
   fail:
     msg: "ZFS Dataset Already Exists, Please Remove The Dataset Manually!"
   when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") != -1
     - not zfs_dataset_wipe
 
 - name: Remove ZFS Dataset for MongoDB
   command: zfs destroy -fR {{ zfs_pool_name }}/mongodb
   when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") != -1
     - not zfs_dataset_wipe
 
 - name: Create ZFS Dataset for MongoDB
   command: zfs create -s -o volblocksize=64k -V {{ zfs_partition_info.disk.size }}M {{ zfs_pool_name }}/mongodb
   when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
 
 - name: Get ZFS Dataset Device Status for MongoDB
   stat:
     path: "/dev/zvol/{{ zfs_pool_name }}/mongodb"
   register: zfs_dataset_mongo_status
-  when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
 
 - name: Format ZFS Dataset Device for MongoDB
   filesystem:
@@ -116,6 +87,4 @@
     fstype: xfs
     force: yes
   when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
     - zfs_dataset_mongo_status.stat.exists

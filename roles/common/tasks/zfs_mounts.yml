@@ -7,6 +7,3 @@
     opts: defaults
     passno: 2
     state: mounted
-  when:
-    - group_names == ['mongoc'] or group_names == ['mongod']
-    - zfs_backend
