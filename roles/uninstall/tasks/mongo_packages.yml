@@ -18,7 +18,7 @@
 
 - name: Uninstall MongoDB Repository
   file:
-    path: /etc/apt/sources.list.d/mongodb-org-3.6.list
+    path: "/etc/apt/sources.list.d/mongodb-org-{{ mongo_version }}.list"
     state: absent
   when:
     - full_uninstall

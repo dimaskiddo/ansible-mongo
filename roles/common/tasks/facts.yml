@@ -31,6 +31,7 @@
   set_fact:
     mongo_ip: "{{ mongo_ip | default(defaul_value, true) }}"
     mongo_distribution: "{{ mongo_distribution | default(default_value, true) }}"
+    mongo_version: "{{ mongo_version | default(default_value, true) }}"
     mongo_admin_password: "{{ mongo_admin_password | default(default_value, true) }}"
     zfs_backend: "{{ zfs_backend if zfs_block_device is defined else 'false' | default(default_value, true) }}"
     zfs_pool_name: "{{ zfs_pool_name | default(default_value, true) }}"
