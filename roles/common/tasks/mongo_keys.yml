@@ -1,0 +1,24 @@
+---
+- name: Generate Keyfile
+  command: openssl rand -base64 756 -out /tmp/keyfile.pem
+  delegate_to: "{{ item }}"
+  with_items:
+    - localhost
+  run_once: true
+
+- name: Distribute Keyfile
+  copy:
+    src: /tmp/keyfile.pem
+    dest: /var/lib/mongodb/pki/keyfile.pem
+    owner: mongodb
+    group: mongodb
+    mode: 0400
+
+- name: Remove Generated Keyfile
+  file:
+    path: /tmp/keyfile.pem
+    state: absent
+  delegate_to: "{{ item }}"
+  with_items:
+    - localhost
+  run_once: true

@@ -1,0 +1,12 @@
+---
+- name: Create MongoDB Database Directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: mongodb
+    group: mongodb
+    recurse: true
+  with_items:
+    - /var/lib/mongodb/data
+    - /var/lib/mongodb/log
+    - /var/lib/mongodb/pki

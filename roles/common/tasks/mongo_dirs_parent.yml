@@ -1,0 +1,11 @@
+---
+- name: Create MongoDB Parent Directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: mongodb
+    group: mongodb
+    recurse: true
+  with_items:
+    - /var/run/mongodb
+    - /var/lib/mongodb

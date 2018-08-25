@@ -1,0 +1,28 @@
+---
+- name: Find Exsisting MongoDB Configuration
+  find:
+    paths: /etc
+    patterns: "mongo*"
+    use_regex: true
+  register: mongo_configs
+
+- name: Remove Exsisting MongoDB Configuration
+  file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items:
+    - "{{ mongo_configs['files'] }}"
+
+- name: Find Exsisting MongoDB Scripts
+  find:
+    paths: /tmp
+    patterns: "mongo*"
+    use_regex: true
+  register: mongo_scripts
+
+- name: Remove Exsisting MongoDB Scripts
+  file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items:
+    - "{{ mongo_scripts['files'] }}"
