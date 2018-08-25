@@ -56,4 +56,5 @@
   set_fact:
     zfs_backend: 'false'
   when:
+    - zfs_backend
     - arbiter
