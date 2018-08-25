@@ -1,8 +1,12 @@
 ---
-- name: Remove MongoDB Parent Directories
+- name: Remove MongoDB Parent Directory
   file:
-    path: "{{ item }}"
+    path: /var/lib/mongodb
     state: absent
-  with_items:
-    - /var/lib/mongodb
-    - /var/run/mongodb
+  when:
+    - not zfs_backend
+
+- name: Remove MongoDB Run Directory
+  file:
+    path: /var/run/mongodb
+    state: absent
