@@ -14,3 +14,34 @@
     - group_names == ['mongoc'] or group_names == ['mongod']
     - zfs_backend
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") != -1
+
+- name: Get ZFS Pool Lists
+  command: zpool list
+  register: zfs_pool_lists
+  when:
+    - full_uninstall
+    - group_names == ['mongoc'] or group_names == ['mongod']
+    - zfs_backend
+    - zfs_pool_wipe
+
+- name: Remove ZFS Pool for MongoDB
+  command: zpool destroy -f {{ zfs_pool_name }}
+  when:
+    - full_uninstall
+    - group_names == ['mongoc'] or group_names == ['mongod']
+    - zfs_backend
+    - zfs_pool_lists.stdout.find(zfs_pool_name) != -1
+    - zfs_pool_wipe
+
+- name: Clean ZFS Block Device for MongoDB
+  parted:
+    device: "/dev/{{ zfs_block_device }}"
+    number: "{{ item.num }}"
+    state: absent
+  with_items:
+    - "{{ zfs_block_info.partitions }}"
+  when:
+    - full_uninstall
+    - group_names == ['mongoc'] or group_names == ['mongod']
+    - zfs_backend
+    - zfs_block_wipe

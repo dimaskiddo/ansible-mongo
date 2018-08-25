@@ -31,8 +31,11 @@
   set_fact:
     full_uninstall: "{{ full_uninstall | default(default_value, true) }}"
     mongo_distribution: "{{ mongo_distribution | default(default_value, true) }}"
+    mongo_version: "{{ mongo_version | default(default_value, true) }}"
     zfs_backend: "{{ zfs_backend if zfs_block_device is defined else 'false' | default(default_value, true) }}"
+    zfs_block_wipe: "{{ zfs_block_wipe if zfs_block_device is defined else 'false' | default(default_value, true) }}"
     zfs_pool_name: "{{ zfs_pool_name | default(default_value, true) }}"
+    zfs_pool_wipe: "{{ zfs_pool_wipe | default(default_value, true) }}"
     primary: "{{ primary | default(default_value, true) }}"
     arbiter: "{{ arbiter | default(default_value, true) }}"
 
