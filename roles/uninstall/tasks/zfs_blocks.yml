@@ -28,5 +28,5 @@
   with_items:
     - "{{ zfs_block_info.partitions }}"
   when:
-    - zfs_block_info.partitions.num is defined
+    - zfs_block_info.partitions | length > 0
     - zfs_block_wipe

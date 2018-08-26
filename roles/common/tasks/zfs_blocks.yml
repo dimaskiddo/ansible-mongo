@@ -3,7 +3,7 @@
   fail:
     msg: "ZFS Block Device is not Empty, Please Clean The Block Device Manually!"
   when:
-    - zfs_block_info.partitions.num is defined
+    - zfs_block_info.partitions | length > 0
     - not zfs_block_wipe
 
 - name: Clean ZFS Block Device for MongoDB
@@ -14,7 +14,7 @@
   with_items:
     - "{{ zfs_block_info.partitions }}"
   when:
-    - zfs_block_info.partitions.num is defined
+    - zfs_block_info.partitions | length > 0
     - zfs_block_wipe
 
 - name: Create ZFS Block Device Partition for MongoDB
