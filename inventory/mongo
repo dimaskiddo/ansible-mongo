@@ -1,5 +1,4 @@
 [all:vars]
-ssh_remote_user=root
 mongo_distribution=mongodb-org
 mongo_version=3.6
 mongo_admin_password=admin

@@ -8,17 +8,17 @@
 - include: zfs_packages.yml
   when:
     - zfs_backend
-    - group_names == ['mongoc'] or group_names == ['mongod']
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongoc']
 
 - include: zfs_blocks.yml
   when:
     - zfs_backend
-    - group_names == ['mongoc'] or group_names == ['mongod']
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongoc']
 
 - include: zfs_mounts.yml
   when:
     - zfs_backend
-    - group_names == ['mongoc'] or group_names == ['mongod']
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongoc']
 
 - include: mongo_packages.yml
 
