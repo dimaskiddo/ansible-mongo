@@ -22,12 +22,12 @@
 
 - include: mongo_packages.yml
 
+- include: mongo_services.yml
+
+- include: mongo_files.yml
+
 - include: mongo_dirs_parents.yml
 
 - include: mongo_dirs_childs.yml
 
 - include: mongo_keys.yml
-
-- include: mongo_services.yml
-
-- include: mongo_files.yml
