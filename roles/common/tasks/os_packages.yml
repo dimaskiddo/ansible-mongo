@@ -27,6 +27,6 @@
   shell: shutdown -r +3 "Ansible Mongo Operating System Upgrade Triggered" 
   args:
     warn: false
-  async: 10
-  poll: 3
+  async: 30
+  poll: 10
   when: os_upgrade_info.changed
