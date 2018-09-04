@@ -13,6 +13,21 @@
   with_items:
     - "{{ mongo_scripts['files'] }}"
 
+- name: Find Exsisting MongoDB Logs
+  find:
+    paths: /var/log/mongodb
+    patterns: "mongo*"
+    use_regex: true
+  register: mongo_logs
+
+- name: Remove Exsisting MongoDB Logs
+  file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items:
+    - "{{ mongo_logs['files'] }}"
+    - /var/log/mongodb
+
 - name: Find Exsisting MongoDB Configuration
   find:
     paths: /etc

@@ -1,12 +1,4 @@
 ---
-- name: Create MongoDB Run Directories
-  file:
-    path: /var/run/mongodb
-    state: directory
-    owner: mongodb
-    group: mongodb
-    recurse: true
-
 - name: Create MongoDB Parent Directories
   file:
     path: /var/lib/mongodb

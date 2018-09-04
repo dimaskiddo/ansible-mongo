@@ -5,8 +5,3 @@
     state: absent
   when:
     - not zfs_backend
-
-- name: Remove MongoDB Run Directory
-  file:
-    path: /var/run/mongodb
-    state: absent
