@@ -13,13 +13,46 @@
     - mongodb-org-mongos
     - mongodb-org-shell
     - mongodb-org-tools
+  when:
+    - mongo_distribution == 'mongodb-org'
 
 - name: Uninstall MongoDB Repository
   file:
     path: "/etc/apt/sources.list.d/mongodb-org-{{ mongo_version_major }}.{{ mongo_version_minor }}.list"
     state: absent
+  when:
+    - mongo_distribution == 'mongodb-org'
 
 - name: Uninstall MongoDB Keyring
   apt_key:
     id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
     state: absent
+  when:
+    - mongo_distribution == 'mongodb-org'
+
+- name: Uninstall MongoDB Packages (Percona)
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    autoremove: yes
+    autoclean: yes
+    purge: yes
+    state: absent
+  with_items:
+    - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}
+    - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}-server
+    - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}-mongos
+    - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}-shell
+    - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}-tools
+  when:
+    - mongo_distribution == 'percona'
+
+- name: Uninstall MongoDB Repository (Percona)
+  shell: dpkg --purge /usr/local/pkg/percona-release_0.1-6.$(lsb_release -sc)_all.deb
+  when:
+    - mongo_distribution == 'percona'
+
+- name: Remove Downloaded MongoDB Repository Package (Percona)
+  shell: rm -f /usr/local/pkg/percona-release_0.1-6.$(lsb_release -sc)_all.deb || true
+  when:
+    - mongo_distribution == 'percona'

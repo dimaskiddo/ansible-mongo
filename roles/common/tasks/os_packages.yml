@@ -24,7 +24,7 @@
     - wget
 
 - name: Restarting Node
-  shell: shutdown -r +5 "Ansible Operating System Upgrade Triggered" 
+  shell: shutdown -r +5 
   async: 10
   poll: 3
   when: os_upgrade_info.changed

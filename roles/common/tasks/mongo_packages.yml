@@ -33,13 +33,24 @@
   when:
     - mongo_distribution == 'mongodb-org'
 
-- name: Download MongoDB Repository Package (Percona)
-  shell: wget -O /tmp/percona-release_0.1-6.$(lsb_release -sc)_all.deb https://repo.percona.com/apt/percona-release_0.1-6.$(lsb_release -sc)_all.deb
+- name: Create MongoDB Repository Package (Percona)
+  file:
+    path: /usr/local/pkg
+    state: directory
+    owner: root
+    group: root
+    recurse: true
   when:
     - mongo_distribution == 'percona'
 
+- name: Download MongoDB Repository Package (Percona)
+  shell: wget -O /usr/local/pkg/percona-release_0.1-6.$(lsb_release -sc)_all.deb https://repo.percona.com/apt/percona-release_0.1-6.$(lsb_release -sc)_all.deb
+  when:
+    - mongo_distribution == 'percona'
+  warn: false
+
 - name: Install MongoDB Repository (Percona)
-  shell: dpkg -i /tmp/percona-release_0.1-6.$(lsb_release -sc)_all.deb
+  shell: dpkg --install /usr/local/pkg/percona-release_0.1-6.$(lsb_release -sc)_all.deb
   when:
     - mongo_distribution == 'percona'
 
