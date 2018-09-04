@@ -16,7 +16,7 @@
 
 - name: Uninstall MongoDB Repository
   file:
-    path: "/etc/apt/sources.list.d/mongodb-org-{{ mongo_version }}.list"
+    path: "/etc/apt/sources.list.d/mongodb-org-{{ mongo_version_major }}.{{ mongo_version_minor }}.list"
     state: absent
 
 - name: Uninstall MongoDB Keyring
