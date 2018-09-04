@@ -15,4 +15,6 @@
   file:
     src: /var/lib/mongodb/log
     dest: /var/log/mongodb
+    owner: mongodb
+    group: mongodb
     state: link
