@@ -9,7 +9,7 @@
   run_once: true
 
 - name: Adding MongoDB ReplicaSet Node as Shard
-  command: mongo admin --port {{ mongo_port }} -u admin -p {{ mongo_admin_password }} /tmp/mongos_shard_add.js
+  shell: mongo admin --port {{ mongo_port }} -u admin -p {{ mongo_admin_password }} /tmp/mongos_shard_add.js
   run_once: true
   
 - name: Clean-up Generated Script For Adding MongoDB ReplicaSet Node as Shard

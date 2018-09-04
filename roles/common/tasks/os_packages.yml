@@ -6,6 +6,7 @@
     autoremove: yes
     autoclean: yes
     upgrade: full
+  register: os_upgrade_info
 
 - name: Install Required Packages
   apt:
@@ -21,3 +22,9 @@
     - software-properties-common
     - curl
     - wget
+
+- name: Restarting Node
+  shell: shutdown -r +5 "Ansible Operating System Upgrade Triggered" 
+  async: 10
+  poll: 3
+  when: os_upgrade_info.changed

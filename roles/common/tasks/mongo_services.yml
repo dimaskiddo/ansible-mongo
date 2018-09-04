@@ -7,7 +7,7 @@
     - service_init_status.stat.islnk
 
 - name: Get MongoDB Node Service Info
-  command: bash -c "service mongod status | grep not-found || true"
+  shell: service mongod status | grep not-found || true
   register: mongod_service_info
   when:
     - service_init_status.stat.exists
@@ -21,7 +21,7 @@
     - mongod_service_info.stdout.find("not-found") == -1
 
 - name: Get MongoDB Router Service Info
-  command: bash -c "service mongos status | grep not-found || true"
+  shell: service mongos status | grep not-found || true
   register: mongos_service_info
   when:
     - service_init_status.stat.exists

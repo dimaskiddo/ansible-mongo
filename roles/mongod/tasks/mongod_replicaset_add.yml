@@ -10,7 +10,7 @@
     - primary
 
 - name: Adding Other MongoDB Node ReplicaSet
-  command: mongo admin --port {{ mongo_port }} -u admin -p {{ mongo_admin_password }} /tmp/mongod_replicaset_add.js
+  shell: mongo admin --port {{ mongo_port }} -u admin -p {{ mongo_admin_password }} /tmp/mongod_replicaset_add.js
   when:
     - primary
   

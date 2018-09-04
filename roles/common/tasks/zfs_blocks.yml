@@ -33,7 +33,7 @@
   register: zfs_partition_info
 
 - name: Get ZFS Pool Lists
-  command: zpool list
+  shell: zpool list
   register: zfs_pool_lists
 
 - name: Fail if ZFS Pool Already Exists
@@ -44,18 +44,18 @@
     - not zfs_pool_wipe
 
 - name: Remove ZFS Pool for MongoDB
-  command: zpool destroy -f {{ zfs_pool_name }}
+  shell: zpool destroy -f {{ zfs_pool_name }}
   when:
     - zfs_pool_lists.stdout.find(zfs_pool_name) != -1
     - zfs_pool_wipe
 
 - name: Create ZFS Pool for MongoDB
-  command: zpool create {{ zfs_pool_name }} -o ashift=12 -O compression=lz4 /dev/{{ zfs_block_device }}1
+  shell: zpool create {{ zfs_pool_name }} -o ashift=12 -O compression=lz4 /dev/{{ zfs_block_device }}1
   when:
     - zfs_pool_lists.stdout.find(zfs_pool_name) == -1
 
 - name: Get ZFS Dataset Lists
-  command: zfs list
+  shell: zfs list
   register: zfs_dataset_lists
 
 - name: Fail if ZFS Dataset Already Exists
@@ -66,13 +66,13 @@
     - not zfs_dataset_wipe
 
 - name: Remove ZFS Dataset for MongoDB
-  command: zfs destroy -fR {{ zfs_pool_name }}/mongodb
+  shell: zfs destroy -fR {{ zfs_pool_name }}/mongodb
   when:
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") != -1
     - not zfs_dataset_wipe
 
 - name: Create ZFS Dataset for MongoDB
-  command: zfs create -s -o volblocksize=64k -V {{ zfs_partition_info.disk.size }}M {{ zfs_pool_name }}/mongodb
+  shell: zfs create -s -o volblocksize=64k -V {{ zfs_partition_info.disk.size }}M {{ zfs_pool_name }}/mongodb
   when:
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
 

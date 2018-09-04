@@ -10,7 +10,7 @@
 - name: Install MongoDB Repository (MongoDB-ORG)
   lineinfile:
     dest: "/etc/apt/sources.list.d/mongodb-org-{{ mongo_version }}.list"
-    line: "deb [arch=amd64] http://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/3.6 multiverse"
+    line: "deb [arch=amd64] http://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongo_version }} multiverse"
     create: yes
     state: present
   when:
@@ -32,3 +32,8 @@
     - mongodb-org-tools
   when:
     - mongo_distribution == 'mongodb-org'
+
+- name: Downloading MongoDB Repository Package (Percona)
+  shell: 
+  when:
+    - mongo_distribution == 'percona'

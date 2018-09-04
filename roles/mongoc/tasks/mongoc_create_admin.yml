@@ -9,7 +9,7 @@
   run_once: true
   
 - name: Intiate MongoDB Config Server Superuser
-  command: mongo admin --port {{ mongo_port }} /tmp/mongoc_create_admin.js
+  shell: mongo admin --port {{ mongo_port }} /tmp/mongoc_create_admin.js
   run_once: true
   
 - name: Clean-up Generated Script For Intiate MongoDB Config Server Superuser

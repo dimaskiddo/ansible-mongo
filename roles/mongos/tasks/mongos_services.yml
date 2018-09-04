@@ -29,7 +29,7 @@
     - service_init_status.stat.islnk
 
 - name: Get MongoDB Router Service Info
-  command: bash -c "service mongos status | grep not-found || true"
+  shell: service mongos status | grep not-found || true
   register: mongos_service_info
   when:
     - service_init_status.stat.exists

@@ -7,7 +7,7 @@
     - service_init_status.stat.islnk
 
 - name: Get MongoDB Config Server Service Info
-  command: bash -c "service mongod status | grep not-found || true"
+  shell: bash -c "service mongod status | grep not-found || true"
   register: mongod_service_info
   when:
     - service_init_status.stat.exists

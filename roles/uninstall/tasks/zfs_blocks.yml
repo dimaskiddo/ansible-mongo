@@ -1,21 +1,21 @@
 ---
 - name: Get ZFS Dataset Lists
-  command: zfs list
+  shell: zfs list
   register: zfs_dataset_lists
 
 - name: Remove ZFS Dataset for MongoDB
-  command: zfs destroy -fR {{ zfs_pool_name }}/mongodb
+  shell: zfs destroy -fR {{ zfs_pool_name }}/mongodb
   when:
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") != -1
 
 - name: Get ZFS Pool Lists
-  command: zpool list
+  shell: zpool list
   register: zfs_pool_lists
   when:
     - zfs_pool_wipe
 
 - name: Remove ZFS Pool for MongoDB
-  command: zpool destroy -f {{ zfs_pool_name }}
+  shell: zpool destroy -f {{ zfs_pool_name }}
   when:
     - zfs_pool_lists.stdout.find(zfs_pool_name) != -1
     - zfs_pool_wipe
