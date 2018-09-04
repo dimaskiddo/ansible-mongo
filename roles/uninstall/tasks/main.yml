@@ -19,10 +19,10 @@
   when:
     - full_uninstall
     - zfs_backend
-    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongoc']
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
 
 - include: zfs_blocks.yml
   when:
     - full_uninstall
     - zfs_backend
-    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongoc']
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
