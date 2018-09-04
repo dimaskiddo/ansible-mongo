@@ -45,12 +45,15 @@
 
 - name: Download MongoDB Repository Package (Percona)
   shell: wget -O /usr/local/pkg/percona-release_0.1-6.$(lsb_release -sc)_all.deb https://repo.percona.com/apt/percona-release_0.1-6.$(lsb_release -sc)_all.deb
+  args:
+    warn: false
   when:
     - mongo_distribution == 'percona'
-  warn: false
 
 - name: Install MongoDB Repository (Percona)
   shell: dpkg --install /usr/local/pkg/percona-release_0.1-6.$(lsb_release -sc)_all.deb
+  args:
+    warn: false
   when:
     - mongo_distribution == 'percona'
 

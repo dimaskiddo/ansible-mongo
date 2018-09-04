@@ -49,10 +49,14 @@
 
 - name: Uninstall MongoDB Repository (Percona)
   shell: dpkg --purge /usr/local/pkg/percona-release_0.1-6.$(lsb_release -sc)_all.deb
+  args:
+    warn: false
   when:
     - mongo_distribution == 'percona'
 
 - name: Remove Downloaded MongoDB Repository Package (Percona)
   shell: rm -f /usr/local/pkg/percona-release_0.1-6.$(lsb_release -sc)_all.deb || true
+  args:
+    warn: false
   when:
     - mongo_distribution == 'percona'

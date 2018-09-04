@@ -8,10 +8,11 @@
 
 - name: Get MongoDB Node Service Info
   shell: service mongod status | grep not-found || true
+  args:
+    warn: false
   register: mongod_service_info
   when:
     - service_init_status.stat.exists
-  warn: false
 
 - name: Disable MongoDB Node Service
   service:
@@ -23,10 +24,11 @@
 
 - name: Get MongoDB Router Service Info
   shell: service mongos status | grep not-found || true
+  args:
+    warn: false
   register: mongos_service_info
   when:
     - service_init_status.stat.exists
-  warn: false
 
 - name: Disable MongoDB Router Service
   service:
