@@ -23,7 +23,7 @@
     - curl
     - wget
 
-- name: Restarting Node
+- name: Restart Node If Operating System Upgraded
   shell: shutdown -r +3 "Ansible Mongo Operating System Upgrade Triggered" 
   args:
     warn: false
