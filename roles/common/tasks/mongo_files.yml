@@ -26,6 +26,12 @@
     state: absent
   with_items:
     - "{{ mongo_logs['files'] }}"
+
+- name: Remove Exsisting MongoDB Directory Logs
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
     - /var/log/mongodb
 
 - name: Find Exsisting MongoDB Scripts
