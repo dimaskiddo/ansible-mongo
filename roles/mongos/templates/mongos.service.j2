@@ -4,8 +4,8 @@ After=network.target
 Documentation=https://docs.mongodb.org/manual
 
 [Service]
-User=mongodb
-Group=mongodb
+User={{ mongo_file_owner }}
+Group={{ mongo_file_owner }}
 ExecStart=/usr/bin/mongos --config /etc/mongos.conf
 PIDFile=/var/run/mongodb/mongos.pid
 # file size
