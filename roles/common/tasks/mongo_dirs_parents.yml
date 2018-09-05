@@ -3,6 +3,6 @@
   file:
     path: /var/lib/mongodb
     state: directory
-    owner: mongodb
-    group: mongodb
+    owner: "{{ mongo_file_owner }}"
+    group: "{{ mongo_file_owner }}"
     recurse: true

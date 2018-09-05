@@ -3,6 +3,6 @@
   template:
     src: mongos.conf.j2
     dest: /etc/mongos.conf
-    owner: mongodb
-    group: mongodb
+    owner: "{{ mongo_file_owner }}"
+    group: "{{ mongo_file_owner }}"
     mode: 0644

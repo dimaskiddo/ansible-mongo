@@ -15,6 +15,10 @@
   when:
     - full_uninstall
 
+- include: mongo_users.yml
+  when:
+    - full_uninstall
+
 - include: zfs_mounts.yml
   when:
     - full_uninstall

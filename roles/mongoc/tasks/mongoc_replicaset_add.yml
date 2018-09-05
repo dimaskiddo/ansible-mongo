@@ -3,8 +3,8 @@
   template:
     src: mongoc_replicaset_add.js.j2
     dest: /tmp/mongoc_replicaset_add.js
-    owner: root
-    group: root
+    owner: "{{ mongo_file_owner }}"
+    group: "{{ mongo_file_owner }}"
     mode: 0644
   run_once: true
   

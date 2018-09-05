@@ -10,8 +10,8 @@
   copy:
     src: /tmp/keyfile.pem
     dest: /var/lib/mongodb/pki/keyfile.pem
-    owner: mongodb
-    group: mongodb
+    owner: "{{ mongo_file_owner }}"
+    group: "{{ mongo_file_owner }}"
     mode: 0400
 
 - name: Remove Generated Keyfile

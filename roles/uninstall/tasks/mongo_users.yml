@@ -1,0 +1,11 @@
+---
+- name: Remove MongoDB User
+  user:
+    name: "{{ mongo_file_owner }}"
+    force: yes
+    state: absent
+
+- name: Remove MongoDB Group
+  group:
+    name: "{{ mongo_file_owner }}"
+    state: absent

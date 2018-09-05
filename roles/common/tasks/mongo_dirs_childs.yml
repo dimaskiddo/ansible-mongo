@@ -3,8 +3,8 @@
   file:
     path: "{{ item }}"
     state: directory
-    owner: mongodb
-    group: mongodb
+    owner: "{{ mongo_file_owner }}"
+    group: "{{ mongo_file_owner }}"
     recurse: true
   with_items:
     - /var/lib/mongodb/data
@@ -15,6 +15,6 @@
   file:
     src: /var/lib/mongodb/log
     dest: /var/log/mongodb
-    owner: mongodb
-    group: mongodb
+    owner: "{{ mongo_file_owner }}"
+    group: "{{ mongo_file_owner }}"
     state: link
