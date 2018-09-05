@@ -28,6 +28,8 @@
   with_items:
     - /var/lib/mongodb/log/mongod.stdout
     - /var/lib/mongodb/log/mongod.stderr
+  when:
+    - inventory_hostname not in groups['mongos']
 
 - name: Create MongoDB STD Output Log Files (MongoDB Router)
   file:
