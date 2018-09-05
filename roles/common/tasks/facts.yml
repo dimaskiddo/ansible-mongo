@@ -34,6 +34,7 @@
     mongo_version_major: "{{ mongo_version_major | default(default_value, true) }}"
     mongo_version_minor: "{{ mongo_version_minor | default(default_value, true) }}"
     mongo_admin_password: "{{ mongo_admin_password | default(default_value, true) }}"
+    mongo_file_owner: "mongodb"
     zfs_backend: "{{ zfs_backend if zfs_block_device is defined else 'false' | default(default_value, true) }}"
     zfs_block_wipe: "{{ zfs_block_wipe if zfs_block_device is defined else 'false' | default(default_value, true) }}"
     zfs_pool_name: "{{ zfs_pool_name | default(default_value, true) }}"
@@ -42,13 +43,7 @@
     primary: "{{ primary | default(default_value, true) }}"
     arbiter: "{{ arbiter | default(default_value, true) }}"
 
-- name: Set Facts for MongoDB User (MongoDB-ORG)
-  set_fact:
-    mongo_file_owner: "mongodb"
-  when:
-    - mongo_distribution == 'mongodb-org'
-
-- name: Set Facts for MongoDB User (Percona)
+- name: Set Facts for MongoDB User If Mongo Distribution Percona
   set_fact:
     mongo_file_owner: "mongod"
   when:

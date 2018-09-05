@@ -1,7 +1,7 @@
 # Shere to write logging data.
 systemLog:
   destination: file
-  path: /var/lib/mongodb/log/mongod.log
+  path: /var/log/mongodb/mongod.log
   logAppend: true
 
 # Where and how to store data.
@@ -13,7 +13,7 @@ storage:
 # How the process runs
 processManagement:
   fork: true
-  pidFilePath: /var/run/mongodb/mongod.pid
+  pidFilePath: /var/run/mongod.pid
 
 # Network interfaces
 net:
@@ -24,6 +24,10 @@ net:
 security:
   authorization: enabled
   keyFile: /var/lib/mongodb/pki/keyfile.pem
+
+# How to profile it
+operationProfiling:
+  slowOpThresholdMs: 250
 
 # Where to replicate
 replication:

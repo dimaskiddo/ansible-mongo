@@ -8,6 +8,14 @@
     upgrade: full
   register: os_upgrade_info
 
+- name: Restart Node If Operating System Upgraded
+  shell: shutdown -r +3 "Ansible Mongo Operating System Upgrade Triggered" 
+  args:
+    warn: false
+  async: 30
+  poll: 10
+  when: os_upgrade_info.changed
+
 - name: Install Required Packages
   apt:
     name: "{{ item }}"
@@ -22,11 +30,3 @@
     - software-properties-common
     - curl
     - wget
-
-- name: Restart Node If Operating System Upgraded
-  shell: shutdown -r +3 "Ansible Mongo Operating System Upgrade Triggered" 
-  args:
-    warn: false
-  async: 30
-  poll: 10
-  when: os_upgrade_info.changed

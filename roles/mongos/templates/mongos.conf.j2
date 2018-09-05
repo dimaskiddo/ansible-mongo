@@ -1,13 +1,13 @@
 # Shere to write logging data.
 systemLog:
   destination: file
-  path: /var/lib/mongodb/log/mongos.log
+  path: /var/log/mongodb/mongos.log
   logAppend: true
 
 # How the process runs
 processManagement:
   fork: true
-  pidFilePath: /var/run/mongodb/mongos.pid
+  pidFilePath: /var/run/mongos.pid
 
 # Network interfaces
 net:
@@ -17,6 +17,10 @@ net:
 # How to secure it
 security:
   keyFile: /var/lib/mongodb/pki/keyfile.pem
+
+# How to profile it
+operationProfiling:
+  slowOpThresholdMs: 250
 
 # How shard runs
 sharding:

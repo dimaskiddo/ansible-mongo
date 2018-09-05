@@ -8,4 +8,3 @@
     recurse: true
   with_items:
     - /var/lib/mongodb
-    - /var/run/mongodb

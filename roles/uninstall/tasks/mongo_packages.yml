@@ -47,23 +47,15 @@
   when:
     - mongo_distribution == 'percona'
 
-- name: Download MongoDB Repository Package (Percona)
-  shell: wget -O /tmp/percona-release_0.1-6.$(lsb_release -sc)_all.deb https://repo.percona.com/apt/percona-release_0.1-6.$(lsb_release -sc)_all.deb
-  args:
-    warn: false
-  when:
-    - mongo_distribution == 'percona'
-
 - name: Uninstall MongoDB Repository (Percona)
-  shell: apt-get purge /tmp/percona-release_0.1-6.$(lsb_release -sc)_all.deb
-  args:
-    warn: false
-  when:
-    - mongo_distribution == 'percona'
-
-- name: Remove Downloaded MongoDB Repository Package (Percona)
-  shell: rm -f /tmp/percona-release_0.1-6.$(lsb_release -sc)_all.deb || true
-  args:
-    warn: false
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    autoremove: yes
+    autoclean: yes
+    purge: yes
+    state: absent
+  with_items:
+    - percona-release
   when:
     - mongo_distribution == 'percona'
