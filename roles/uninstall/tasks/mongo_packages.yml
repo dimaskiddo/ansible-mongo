@@ -51,9 +51,6 @@
   file:
     path: /usr/local/percona
     state: absent
-    owner: root
-    group: root
-    recurse: true
   when:
     - mongo_distribution == 'percona'
 
