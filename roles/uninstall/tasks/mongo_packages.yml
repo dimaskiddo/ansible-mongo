@@ -47,13 +47,6 @@
   when:
     - mongo_distribution == 'percona'
 
-- name: Create MongoDB Repository Package (Percona)
-  file:
-    path: /usr/local/percona
-    state: absent
-  when:
-    - mongo_distribution == 'percona'
-
 - name: Download MongoDB Repository Package (Percona)
   shell: wget -O /tmp/percona-release_0.1-6.$(lsb_release -sc)_all.deb https://repo.percona.com/apt/percona-release_0.1-6.$(lsb_release -sc)_all.deb
   args:
