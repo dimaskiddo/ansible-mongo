@@ -24,7 +24,7 @@
     path: "{{ item }}"
     owner: "{{ mongo_file_owner }}"
     group: "{{ mongo_file_owner }}"
-    state: file
+    state: touch
   with_items:
     - /var/lib/mongodb/log/mongod.stdout
     - /var/lib/mongodb/log/mongod.stderr
@@ -34,7 +34,7 @@
     path: "{{ item }}"
     owner: "{{ mongo_file_owner }}"
     group: "{{ mongo_file_owner }}"
-    state: file
+    state: touch
   with_items:
     - /var/lib/mongodb/log/mongos.stdout
     - /var/lib/mongodb/log/mongos.stderr
