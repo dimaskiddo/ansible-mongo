@@ -1,5 +1,5 @@
 ---
-- name: Uninstall MongoDB Packages
+- name: Uninstall MongoDB Packages (MongoDB-ORG)
   apt:
     name: "{{ item }}"
     force_apt_get: yes
@@ -16,14 +16,14 @@
   when:
     - mongo_distribution == 'mongodb-org'
 
-- name: Uninstall MongoDB Repository
+- name: Uninstall MongoDB Repository (MongoDB-ORG)
   file:
     path: "/etc/apt/sources.list.d/mongodb-org-{{ mongo_version_major }}.{{ mongo_version_minor }}.list"
     state: absent
   when:
     - mongo_distribution == 'mongodb-org'
 
-- name: Uninstall MongoDB Keyring
+- name: Uninstall MongoDB Keyring (MongoDB-ORG)
   apt_key:
     id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
     state: absent
