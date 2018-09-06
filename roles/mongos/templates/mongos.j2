@@ -33,9 +33,9 @@ fi
 start()
 {
   echo -n $"Starting mongos: "
-  {{ if mongo_distribution == 'percona' }}
+  {% if mongo_distribution == 'percona' %}
   /usr/bin/percona-server-mongodb-helper.sh
-  {{ endif }}  
+  {% endif %}  
   daemon --user "$MONGO_USER" $mongos $OPTIONS
   RETVAL=$?
   echo

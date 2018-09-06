@@ -15,9 +15,9 @@ LimitNPROC=64000
 LimitMEMLOCK=infinity
 TasksMax=infinity
 TasksAccounting=false
-{{ if mongo_distribution == 'percona' }}
+{% if mongo_distribution == 'percona' %}
 ExecStartPre=/usr/bin/percona-server-mongodb-helper.sh
-{{ endif }}
+{% endif %}
 ExecStart=/usr/bin/mongos --config /etc/mongod.conf
 PIDFile=/var/run/mongod.pid
 
