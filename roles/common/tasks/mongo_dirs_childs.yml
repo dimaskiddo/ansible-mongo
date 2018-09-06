@@ -40,5 +40,6 @@
   with_items:
     - /var/lib/mongodb/log/mongos.stdout
     - /var/lib/mongodb/log/mongos.stderr
+    - /var/lib/mongodb/log/mongos.diagnostic.data
   when:
     - inventory_hostname in groups['mongos']

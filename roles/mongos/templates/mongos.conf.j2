@@ -18,10 +18,6 @@ net:
 security:
   keyFile: /var/lib/mongodb/pki/keyfile.pem
 
-# How to profile it
-operationProfiling:
-  slowOpThresholdMs: 250
-
 # How shard runs
 sharding:
 {% set mongoc_hosts = '' %}
