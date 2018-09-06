@@ -23,7 +23,7 @@
   when:
     - inventory_hostname in groups['mongos']
 
-- name: Create Symlink MongoDB Logs Directory
+- name: Create Symlink MongoDB Log Directory
   file:
     src: /var/lib/mongodb/log
     dest: /var/log/mongodb
@@ -31,7 +31,7 @@
     group: "{{ mongo_file_owner }}"
     state: link
 
-- name: Create MongoDB Node Log Files
+- name: Create MongoDB Log Files
   file:
     path: "{{ item }}"
     owner: "{{ mongo_file_owner }}"
@@ -40,17 +40,3 @@
   with_items:
     - /var/lib/mongodb/log/mongod.stdout
     - /var/lib/mongodb/log/mongod.stderr
-  when:
-    - inventory_hostname not in groups['mongos']
-
-- name: Create MongoDB Router Log Files
-  file:
-    path: "{{ item }}"
-    owner: "{{ mongo_file_owner }}"
-    group: "{{ mongo_file_owner }}"
-    state: touch
-  with_items:
-    - /var/lib/mongodb/log/mongos.stdout
-    - /var/lib/mongodb/log/mongos.stderr
-  when:
-    - inventory_hostname in groups['mongos']
