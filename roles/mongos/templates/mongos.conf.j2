@@ -1,13 +1,13 @@
 # Shere to write logging data.
 systemLog:
   destination: file
-  path: /var/log/mongodb/mongod.log
+  path: /var/log/mongodb/mongos.log
   logAppend: true
 
 # How the process runs
 processManagement:
   fork: true
-  pidFilePath: /var/run/mongod.pid
+  pidFilePath: /var/run/mongodb/mongos.pid
 
 # Network interfaces
 net:

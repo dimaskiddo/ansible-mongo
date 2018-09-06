@@ -1,5 +1,5 @@
 ---
-- name: Create MongoDB Database Directories
+- name: Create MongoDB Node Directories
   file:
     path: "{{ item }}"
     state: directory
@@ -11,7 +11,15 @@
     - /var/lib/mongodb/log
     - /var/lib/mongodb/pki
 
-- name: Create MongoDB Router Diagnostic Log Directory
+- name: Create Symlink MongoDB Log Directory
+  file:
+    src: /var/lib/mongodb/log
+    dest: /var/log/mongodb
+    owner: "{{ mongo_file_owner }}"
+    group: "{{ mongo_file_owner }}"
+    state: link
+
+- name: Create MongoDB Router Diagnostic Log Directory (Percona)
   file:
     path: "{{ item }}"
     state: directory
@@ -21,17 +29,10 @@
   with_items:
     - /var/lib/mongodb/log/mongos.diagnostic.data
   when:
+    - mongo_distribution == 'percona'
     - inventory_hostname in groups['mongos']
 
-- name: Create Symlink MongoDB Log Directory
-  file:
-    src: /var/lib/mongodb/log
-    dest: /var/log/mongodb
-    owner: "{{ mongo_file_owner }}"
-    group: "{{ mongo_file_owner }}"
-    state: link
-
-- name: Create MongoDB Log Files
+- name: Create MongoDB Log Files (Percona)
   file:
     path: "{{ item }}"
     owner: "{{ mongo_file_owner }}"
@@ -40,3 +41,6 @@
   with_items:
     - /var/lib/mongodb/log/mongod.stdout
     - /var/lib/mongodb/log/mongod.stderr
+  when:
+    - mongo_distribution == 'percona'
+    - inventory_hostname not in groups['mongos']

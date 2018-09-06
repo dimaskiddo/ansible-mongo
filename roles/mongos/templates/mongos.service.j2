@@ -12,13 +12,8 @@ LimitAS=infinity
 LimitNOFILE=64000
 LimitNPROC=64000
 LimitMEMLOCK=infinity
-TasksMax=infinity
-TasksAccounting=false
-{% if mongo_distribution == 'percona' %}
-ExecStartPre=/usr/bin/percona-server-mongodb-helper.sh
-{% endif %}
-ExecStart=/usr/bin/mongos --config /etc/mongod.conf
-PIDFile=/var/run/mongod.pid
+ExecStart=/usr/bin/mongos --config /etc/mongos.conf
+PIDFile=/var/run/mongodb/mongos.pid
 
 [Install]
 WantedBy=multi-user.target
