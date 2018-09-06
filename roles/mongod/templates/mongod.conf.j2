@@ -13,9 +13,9 @@ storage:
 # How the process runs
 processManagement:
   fork: true
-{% if mongo_distribution = 'mongodb-org' %}
+{% if mongo_distribution == 'mongodb-org' %}
   pidFilePath: /var/run/mongodb/mongod.pid
-{% elseif mongo_distribution = 'percona' %}
+{% elseif mongo_distribution == 'percona' %}
   pidFilePath: /var/run/mongod.pid
 {% endif %}
 
