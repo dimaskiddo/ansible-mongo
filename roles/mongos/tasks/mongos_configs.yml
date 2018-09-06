@@ -1,8 +1,8 @@
 ---
 - name: Generate MongoDB Router Configuration
   template:
-    src: mongos.conf.j2
-    dest: /etc/mongos.conf
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
     owner: "{{ mongo_file_owner }}"
     group: "{{ mongo_file_owner }}"
     mode: 0644
