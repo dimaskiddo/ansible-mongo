@@ -11,7 +11,19 @@
     - /var/lib/mongodb/log
     - /var/lib/mongodb/pki
 
-- name: Symlink MongoDB Logs Directory
+- name: Create MongoDB Router Diagnostic Log Directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ mongo_file_owner }}"
+    group: "{{ mongo_file_owner }}"
+    recurse: true
+  with_items:
+    - /var/lib/mongodb/log/mongos.diagnostic.data
+  when:
+    - inventory_hostname in groups['mongos']
+
+- name: Create Symlink MongoDB Logs Directory
   file:
     src: /var/lib/mongodb/log
     dest: /var/log/mongodb
@@ -19,7 +31,7 @@
     group: "{{ mongo_file_owner }}"
     state: link
 
-- name: Create MongoDB STD Output Log Files (MongoDB Node)
+- name: Create MongoDB Node Log Files
   file:
     path: "{{ item }}"
     owner: "{{ mongo_file_owner }}"
@@ -31,7 +43,7 @@
   when:
     - inventory_hostname not in groups['mongos']
 
-- name: Create MongoDB STD Output Log Files (MongoDB Router)
+- name: Create MongoDB Router Log Files
   file:
     path: "{{ item }}"
     owner: "{{ mongo_file_owner }}"
@@ -40,6 +52,5 @@
   with_items:
     - /var/lib/mongodb/log/mongos.stdout
     - /var/lib/mongodb/log/mongos.stderr
-    - /var/lib/mongodb/log/mongos.diagnostic.data
   when:
     - inventory_hostname in groups['mongos']
