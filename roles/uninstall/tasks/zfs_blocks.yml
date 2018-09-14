@@ -17,8 +17,8 @@
 - name: Remove ZFS Pool for MongoDB
   shell: zpool destroy -f {{ zfs_pool_name }}
   when:
-    - zfs_pool_lists.stdout.find(zfs_pool_name) != -1
     - zfs_pool_wipe
+    - zfs_pool_lists.stdout.find(zfs_pool_name) != -1
 
 - name: Clean ZFS Block Device for MongoDB
   parted:
@@ -28,5 +28,5 @@
   with_items:
     - "{{ zfs_block_info.partitions }}"
   when:
-    - zfs_block_info.partitions | length > 0
     - zfs_block_wipe
+    - zfs_block_info.partitions | length > 0
