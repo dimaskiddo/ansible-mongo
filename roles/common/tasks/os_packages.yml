@@ -9,11 +9,11 @@
   register: os_upgrade_info
 
 - name: Restart Node If Operating System Upgraded
-  shell: shutdown -r +3 "Ansible Mongo Operating System Upgrade Triggered" 
+  shell: shutdown -r +60 "Ansible Mongo Operating System Upgrade Triggered" 
   args:
     warn: false
-  async: 30
-  poll: 10
+  async: 60
+  poll: 5
   when: os_upgrade_info.changed
 
 - name: Install Required Packages
