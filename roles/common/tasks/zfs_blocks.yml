@@ -40,8 +40,8 @@
   fail:
     msg: "ZFS Pool Already Exists, Please Remove The Pool Manually!"
   when:
-    - zfs_pool_lists.stdout.find(zfs_pool_name) != -1
     - not zfs_pool_wipe
+    - zfs_pool_lists.stdout.find(zfs_pool_name) != -1
 
 - name: Remove ZFS Pool for MongoDB
   shell: zpool destroy -f {{ zfs_pool_name }}
