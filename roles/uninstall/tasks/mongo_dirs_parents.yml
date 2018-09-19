@@ -5,6 +5,12 @@
     state: absent
   with_items:
     - /var/lib/mongodb
-    - /var/run/mongodb
   when:
     - not zfs_backend
+
+- name: Remove MongoDB Run Directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/run/mongodb

@@ -11,7 +11,7 @@
     - /var/lib/mongodb/log
     - /var/lib/mongodb/pki
 
-- name: Create Symlink MongoDB Log Directory
+- name: Create Symlink MongoDB Logs Directory
   file:
     src: /var/lib/mongodb/log
     dest: /var/log/mongodb
@@ -19,7 +19,7 @@
     group: "{{ mongo_file_owner }}"
     state: link
 
-- name: Create MongoDB Router Diagnostic Log Directory (Percona)
+- name: Create MongoDB Router Diagnostic Logs Directory (Percona)
   file:
     path: "{{ item }}"
     state: directory
@@ -32,7 +32,7 @@
     - mongo_distribution == 'percona'
     - inventory_hostname in groups['mongos']
 
-- name: Create MongoDB Log Files (Percona)
+- name: Create MongoDB Logs Files (Percona)
   file:
     path: "{{ item }}"
     owner: "{{ mongo_file_owner }}"

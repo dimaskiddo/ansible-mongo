@@ -8,4 +8,13 @@
     recurse: true
   with_items:
     - /var/lib/mongodb
+
+- name: Create MongoDB Run Directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ mongo_file_owner }}"
+    group: "{{ mongo_file_owner }}"
+    recurse: true
+  with_items:
     - /var/run/mongodb
