@@ -40,18 +40,6 @@
     primary: "{{ primary | default(default_value, true) }}"
     arbiter: "{{ arbiter | default(default_value, true) }}"
 
-- name: Set Facts for MongoDB User (MongoDB-ORG)
-  set_fact:
-    mongo_file_owner: "mongodb"
-  when:
-    - mongo_distribution == 'mongodb-org'
-
-- name: Set Facts for MongoDB User (Percona)
-  set_fact:
-    mongo_file_owner: "mongod"
-  when:
-    - mongo_distribution == 'percona'
-
 - name: Make Sure Primary Node is not Arbiter Node
   set_fact:
     arbiter: 'false'
