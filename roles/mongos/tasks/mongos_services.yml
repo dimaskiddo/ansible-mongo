@@ -3,8 +3,8 @@
   template:
     src: mongos.j2
     dest: /etc/init.d/mongos
-    owner: "{{ mongo_file_owner }}"
-    group: "{{ mongo_file_owner }}"
+    owner: root
+    group: root
     mode: 0755
   when:
     - service_init_status.stat.islnk is defined
@@ -14,8 +14,8 @@
   template:
     src: mongos.service.j2
     dest: /etc/systemd/system/mongos.service
-    owner: "{{ mongo_file_owner }}"
-    group: "{{ mongo_file_owner }}"
+    owner: root
+    group: root
     mode: 0644
   when:
     - service_init_status.stat.islnk is defined
