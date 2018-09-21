@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=forking
-User={{ mongo_file_owner }}
-Group={{ mongo_file_owner }}
+User=mongod
+Group=mongod
 LimitFSIZE=infinity
 LimitCPU=infinity
 LimitAS=infinity
