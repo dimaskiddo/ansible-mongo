@@ -15,19 +15,17 @@
     - zfs_backend
     - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
 
+- include: mongo_packages.yml
+
+- include: mongo_services.yml
+
+- include: mongo_cleanups.yml
+
 - include: zfs_mounts.yml
   when:
     - zfs_backend
     - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
 
-- include: mongo_packages.yml
-
-- include: mongo_services.yml
-
-- include: mongo_files.yml
-
-- include: mongo_dirs_parents.yml
-
-- include: mongo_dirs_childs.yml
+- include: mongo_directories.yml
 
 - include: mongo_keys.yml

@@ -22,6 +22,11 @@
   when:
     - mongod_service_info.stdout.find("not-found") == -1
 
+- name: Kill All Remaining MongoDB Node Service
+  shell: killall mongod || true
+  args:
+    warn: false
+
 - name: Get MongoDB Router Service Info
   shell: service mongos status | grep not-found || true
   args:
@@ -37,3 +42,8 @@
     state: stopped
   when:
     - mongos_service_info.stdout.find("not-found") == -1
+
+- name: Kill All Remaining MongoDB Router Service
+  shell: killall mongos || true
+  args:
+    warn: false

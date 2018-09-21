@@ -1,0 +1,47 @@
+---
+- name: Remove MongoDB Diagnostics Directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/lib/mongodb/log/mongos.diagnostic.data
+  when:
+    - mongo_distribution == 'percona'
+    - inventory_hostname in groups['mongos']
+
+- name: Remove MongoDB Logs File
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/lib/mongodb/log/mongod.stdout
+    - /var/lib/mongodb/log/mongod.stderr
+  when:
+    - mongo_distribution == 'percona'
+    - inventory_hostname not in groups['mongos']
+
+- name: Remove MongoDB Logs Directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/log/mongodb
+
+- name: Remove MongoDB Run Directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/run/mongodb
+  when:
+    - inventory_hostname not in groups['mongos']
+
+- name: Remove MongoDB Databases Directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/lib/mongodb
+    - /var/lib/mongodb/data
+    - /var/lib/mongodb/log
+    - /var/lib/mongodb/pki

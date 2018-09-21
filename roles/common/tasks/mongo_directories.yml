@@ -1,0 +1,59 @@
+---
+- name: Create MongoDB Databases Directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: mongod
+    group: mongod
+    recurse: true
+  with_items:
+    - /var/lib/mongodb
+    - /var/lib/mongodb/data
+    - /var/lib/mongodb/log
+    - /var/lib/mongodb/pki
+
+- name: Create MongoDB Run Directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: mongod
+    group: mongod
+    recurse: true
+  with_items:
+    - /var/run/mongodb
+  when:
+    - inventory_hostname in groups['mongos']
+
+- name: Create MongoDB Logs Directory
+  file:
+    src: /var/lib/mongodb/log
+    dest: /var/log/mongodb
+    owner: mongod
+    group: mongod
+    state: link
+
+- name: Create MongoDB Logs File
+  file:
+    path: "{{ item }}"
+    owner: mongod
+    group: mongod
+    state: touch
+  with_items:
+    - /var/lib/mongodb/log/mongod.stdout
+    - /var/lib/mongodb/log/mongod.stderr
+  when:
+    - mongo_distribution == 'percona'
+    - inventory_hostname not in groups['mongos']
+
+- name: Create MongoDB Diagnostics Directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: mongod
+    group: mongod
+    recurse: true
+  with_items:
+    - /var/lib/mongodb/log/mongos.diagnostic.data
+  when:
+    - mongo_distribution == 'percona'
+    - inventory_hostname in groups['mongos']

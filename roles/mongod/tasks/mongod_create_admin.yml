@@ -3,8 +3,8 @@
   template:
     src: mongod_create_admin.js.j2
     dest: /tmp/mongod_create_admin.js
-    owner: "{{ mongo_file_owner }}"
-    group: "{{ mongo_file_owner }}"
+    owner: root
+    group: root
     mode: 0644
   when:
     - primary

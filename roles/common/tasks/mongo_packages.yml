@@ -1,60 +1,26 @@
 ---
-- name: Install MongoDB Keyring (MongoDB-ORG)
-  apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
-    state: present
-  when:
-    - mongo_distribution == 'mongodb-org'
-
-- name: Install MongoDB Repository (MongoDB-ORG)
-  lineinfile:
-    dest: "/etc/apt/sources.list.d/mongodb-org-{{ mongo_version_major }}.{{ mongo_version_minor }}.list"
-    line: "deb [arch=amd64] http://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongo_version_major }}.{{ mongo_version_minor }} multiverse"
-    create: yes
-    state: present
-  when:
-    - mongo_distribution == 'mongodb-org'
-
-- name: Install MongoDB Packages (MongoDB-ORG)
-  apt:
-    name: "{{ item }}"
-    force_apt_get: yes
-    update_cache: yes
-    autoremove: yes
-    autoclean: yes
-    state: present
-  with_items:
-    - mongodb-org
-    - mongodb-org-server
-    - mongodb-org-mongos
-    - mongodb-org-shell
-    - mongodb-org-tools
-  when:
-    - mongo_distribution == 'mongodb-org'
-
-- name: Download MongoDB Repository Package (Percona)
+- name: Download MongoDB Repository Package
   shell: wget -O /tmp/percona-release_0.1-6.$(lsb_release -sc)_all.deb https://repo.percona.com/apt/percona-release_0.1-6.$(lsb_release -sc)_all.deb
   args:
     warn: false
   when:
     - mongo_distribution == 'percona'
 
-- name: Install MongoDB Repository (Percona)
+- name: Install MongoDB Repository
   shell: dpkg --install /tmp/percona-release_0.1-6.$(lsb_release -sc)_all.deb
   args:
     warn: false
   when:
     - mongo_distribution == 'percona'
 
-- name: Remove Downloaded MongoDB Repository Package (Percona)
+- name: Remove Downloaded MongoDB Repository Package
   shell: rm -f /tmp/percona-release_0.1-6.$(lsb_release -sc)_all.deb || true
   args:
     warn: false
   when:
     - mongo_distribution == 'percona'
 
-- name: Install MongoDB Packages (Percona)
+- name: Install MongoDB Packages
   apt:
     name: "{{ item }}"
     force_apt_get: yes
