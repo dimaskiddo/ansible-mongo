@@ -20,7 +20,7 @@
   when:
     - mongo_distribution == 'percona'
 
-- name: Install MongoDB Packages
+- name: Install MongoDB Node Packages
   apt:
     name: "{{ item }}"
     force_apt_get: yes
@@ -29,10 +29,25 @@
     autoclean: yes
     state: present
   with_items:
-    - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}
     - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}-server
+    - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}-shell
+    - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}-tools
+  when:
+    - mongo_distribution == 'percona'
+    - inventory_hostname not in groups['mongos']
+
+- name: Install MongoDB Router Packages
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    update_cache: yes
+    autoremove: yes
+    autoclean: yes
+    state: present
+  with_items:
     - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}-mongos
     - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}-shell
     - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}-tools
   when:
     - mongo_distribution == 'percona'
+    - inventory_hostname in groups['mongos']
