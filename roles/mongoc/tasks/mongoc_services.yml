@@ -24,6 +24,7 @@
 
 - name: Wait For MongoDB Config Server Service
   wait_for:
+    host: "{{ mongo_ip }}"
     port: "{{ mongo_port }}"
     timeout: 15
     connect_timeout: 3

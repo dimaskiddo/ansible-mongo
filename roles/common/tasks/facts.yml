@@ -29,7 +29,7 @@
 
 - name: Set Host Facts
   set_fact:
-    mongo_ip: "{{ mongo_ip | default(defaul_value, true) }}"
+    mongo_ip: "{{ mongo_ip | default(default_value, true) }}"
     mongo_distribution: "{{ mongo_distribution | default(default_value, true) }}"
     mongo_version_major: "{{ mongo_version_major | default(default_value, true) }}"
     mongo_version_minor: "{{ mongo_version_minor | default(default_value, true) }}"
