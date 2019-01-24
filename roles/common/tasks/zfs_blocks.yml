@@ -65,9 +65,16 @@
     - not zfs_dataset_wipe
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") != -1
 
-- name: Create ZFS Dataset for MongoDB
-  shell: zfs create -s -o volblocksize=64k -V {{ zfs_dataset_size }} {{ zfs_pool_name }}/mongodb
+- name: Create ZFS Dataset for MongoDB for MongoDB Config Server
+  shell: zfs create -s -o volblocksize=64k -V {{ zfs_dataset_size_mongoc }} {{ zfs_pool_name }}/mongodb
   when:
+    - inventory_hostname in groups['mongoc']
+    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
+
+- name: Create ZFS Dataset for MongoDB for MongoDB Node
+  shell: zfs create -s -o volblocksize=64k -V {{ zfs_dataset_size_mongod }} {{ zfs_pool_name }}/mongodb
+  when:
+    - inventory_hostname in groups['mongod']
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
 
 - name: Get ZFS Dataset Device Status for MongoDB
