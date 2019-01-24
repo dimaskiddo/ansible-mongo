@@ -13,7 +13,8 @@
     - item is not defined
     - item == ""
   with_items:
-    - zfs_dataset_size
+    - zfs_dataset_size_mongoc
+    - zfs_dataset_size_mongod
 
 - name: Get Service Init Status
   stat:
