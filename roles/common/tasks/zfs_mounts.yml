@@ -3,7 +3,7 @@
   mount:
     path: /var/lib/mongodb
     src: "/dev/zvol/{{ zfs_pool_name }}/mongodb"
-    fstype: xfs
+    fstype: ext4
     opts: defaults
     passno: 2
     state: mounted
