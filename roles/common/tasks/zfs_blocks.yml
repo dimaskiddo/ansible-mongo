@@ -66,7 +66,7 @@
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") != -1
 
 - name: Create ZFS Dataset for MongoDB for MongoDB Config Server
-  shell: zfs create -s -V {{ zfs_dataset_size_mongoc }} {{ zfs_pool_name }}/mongodb
+  shell: zfs create -s -o volblocksize=64k -V {{ zfs_dataset_size_mongoc }} {{ zfs_pool_name }}/mongodb
   when:
     - inventory_hostname in groups['mongoc']
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
@@ -85,7 +85,7 @@
 - name: Format ZFS Dataset Device for MongoDB
   filesystem:
     dev: "/dev/zvol/{{ zfs_pool_name }}/mongodb"
-    fstype: ext4
+    fstype: xfs
     force: yes
   when:
     - zfs_dataset_mongo_status.stat.exists
