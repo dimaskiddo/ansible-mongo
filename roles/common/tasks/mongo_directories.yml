@@ -21,8 +21,6 @@
     recurse: true
   with_items:
     - /var/run/mongodb
-  when:
-    - inventory_hostname in groups['mongos']
 
 - name: Create MongoDB Logs Directory
   file:

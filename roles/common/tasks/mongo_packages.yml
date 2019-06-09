@@ -25,8 +25,7 @@
     name: "{{ item }}"
     force_apt_get: yes
     update_cache: yes
-    autoremove: yes
-    autoclean: yes
+    dpkg_options: "force-confdef,force-confold,force-confmiss"
     state: present
   with_items:
     - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}-server
@@ -41,8 +40,7 @@
     name: "{{ item }}"
     force_apt_get: yes
     update_cache: yes
-    autoremove: yes
-    autoclean: yes
+    dpkg_options: "force-confdef,force-confold,force-confmiss"
     state: present
   with_items:
     - percona-server-mongodb-{{ mongo_version_major }}{{ mongo_version_minor }}-mongos

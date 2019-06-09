@@ -1,9 +1,9 @@
 ---
 - include: facts.yml
 
-- include: os_packages.yml
+- include: apparmor_services.yml
 
-- include: python_packages.yml
+- include: os_packages.yml
 
 - include: zfs_packages.yml
   when:
@@ -31,3 +31,7 @@
 - include: mongo_directories.yml
 
 - include: mongo_keys.yml
+
+- include: python_packages.yml
+
+- include: os_cleanups.yml

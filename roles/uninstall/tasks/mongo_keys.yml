@@ -1,5 +1,5 @@
 ---
-- name: Remove Generated Keyfile
+- name: Remove Generated MongoDB Keyfile
   file:
     path: /tmp/keyfile.pem
     state: absent

@@ -33,8 +33,6 @@
     state: absent
   with_items:
     - /var/run/mongodb
-  when:
-    - inventory_hostname not in groups['mongos']
 
 - name: Remove MongoDB Databases Directory
   file:
