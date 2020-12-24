@@ -61,14 +61,14 @@
     - service_init_status.stat.exists
     - inventory_hostname in groups['mongos']
 
-- name: Disable MongoDB Router Service
-  service:
-    name: mongos
-    enabled: no
-    state: stopped
-  when:
-    - inventory_hostname in groups['mongos']
-    - mongos_service_info.stdout.find("not-found") == -1
+# - name: Disable MongoDB Router Service
+#   service:
+#     name: mongos
+#     enabled: no
+#     state: stopped
+#   when:
+#     - inventory_hostname in groups['mongos']
+#     - mongos_service_info.stdout.find("not-found") == -1
 
 - name: Wait for 5 Seconds Before Killing All MongoDB Router Service
   wait_for:
